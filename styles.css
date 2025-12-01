@@ -1,0 +1,289 @@
+/* ---------- Global Theme ----------- */
+:root {
+    --main-color: #0abfdf;
+    --accent-color: #ffc15e;
+    --bg-color: #ff7700;
+    --text-color: #333;
+    --navbar-bg: rgb(255, 0, 0);
+    --font-main: 'Arial', sans-serif;
+}
+
+/* ---------- General ---------- */
+* {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+}
+
+body {
+    font-family: var(--font-main);
+    background: var(--bg-color);
+    color: var(--text-color);
+}
+
+a { 
+    text-decoration: none; 
+    color: var(--text-color); 
+}
+
+/* ---------- Navbar ---------- */
+.navbar {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 15px 5%;
+    background: var(--navbar-bg);
+    border-bottom: 2px solid var(--main-color);
+}
+
+.navbar .logo {
+    font-size: 1.8rem;
+    font-weight: bold;
+}
+
+.nav-links {
+    list-style: none;
+    display: flex;
+    gap: 20px;
+}
+
+.nav-links li a {
+    font-size: 1rem;
+    transition: color 0.3s ease;
+}
+
+.nav-links li a:hover {
+    color: var(--main-color);
+}
+
+/* ---------- Responsive Navbar ---------- */
+@media (max-width: 768px) {
+    .navbar {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 10px;
+    }
+
+    .nav-links {
+        flex-direction: column;
+        width: 100%;
+        gap: 10px;
+    }
+
+    .nav-links li a {
+        font-size: 1.2rem;
+    }
+}
+
+/* ---------- Hero ---------- */
+.hero {
+    text-align: center;
+    padding: 100px;
+    background: var(--main-color);
+    color: white;
+}
+
+/* ---------- Page Content ---------- */
+.page-content {
+    padding: 50px 10%;
+}
+
+/* ---------- Calendar Grid ---------- */
+#calendar {
+    display: grid;
+    grid-template-columns: repeat(7, 1fr);
+    gap: 8px;
+    margin: 20px 0;
+}
+
+#calendar div {
+    padding: 20px;
+    background: #fff;
+    border: 2px solid var(--main-color);
+    border-radius: 8px;
+    text-align: center;
+    cursor: pointer;
+}
+
+#calendar div:hover {
+    background: var(--accent-color);
+    color: white;
+}
+
+.hidden {
+    display: none;
+}
+
+/* ---------- Appointment Form ---------- */
+#appointment-form {
+    padding: 20px;
+    margin-top: 20px;
+    background: white;
+    border: 2px solid var(--main-color);
+    border-radius: 12px;
+}
+
+#appointment-form input {
+    width: 100%;
+    padding: 10px;
+    margin: 8px 0 15px;
+    border: 1px solid #aaa;
+    border-radius: 6px;
+}
+
+#save-btn {
+    background: var(--main-color);
+    color: white;
+    border: none;
+    padding: 10px 20px;
+    border-radius: 8px;
+    cursor: pointer;
+}
+
+/* ---------- Appointments List ---------- */
+#appointments-list li {
+    margin: 10px 0;
+    padding: 10px;
+    background: white;
+    border-left: 4px solid var(--main-color);
+}
+
+/* ---------- Chatbot Button ---------- */
+#chatbot-button {
+    position: fixed;
+    bottom: 20px;
+    right: 20px;
+    background: #00796b;
+    color: white;
+    font-size: 30px;
+    width: 60px;
+    height: 60px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    border-radius: 50%;
+    cursor: pointer;
+    box-shadow: 0 4px 10px rgba(0,0,0,0.3);
+    transition: 0.2s;
+    z-index: 9999;
+}
+
+#chatbot-button:hover {
+    background: #004d40;
+}
+
+/* ---------- Chatbot Window ---------- */
+#chatbot-window {
+    position: fixed;
+    bottom: 90px;
+    right: 20px;
+    width: 300px;
+    height: 420px;
+    background: white;
+    border-radius: 10px;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.4);
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+    z-index: 9999;
+}
+
+#chatbot-header {
+    background: #00796b;
+    color: white;
+    padding: 10px;
+    font-weight: bold;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+#chatbot-close {
+    cursor: pointer;
+}
+
+#chatbot-messages {
+    flex: 1;
+    padding: 10px;
+    overflow-y: auto;
+    font-size: 14px;
+}
+
+.bot-message {
+    background: #e0f7fa;
+    padding: 8px;
+    margin-bottom: 10px;
+    border-radius: 6px;
+}
+
+.user-message {
+    background: #c8e6c9;
+    padding: 8px;
+    margin-bottom: 10px;
+    border-radius: 6px;
+    text-align: right;
+}
+
+#chatbot-input-area {
+    display: flex;
+    border-top: 1px solid #ccc;
+}
+
+#chatbot-input {
+    flex: 1;
+    border: none;
+    padding: 8px;
+}
+
+#chatbot-send {
+    background: #00796b;
+    color: white;
+    border: none;
+    padding: 10px 12px;
+    cursor: pointer;
+}
+
+/* ---------- Questions Section ---------- */
+.questions-section {
+    background: #fff;
+    padding: 20px;
+    border-radius: 8px;
+    margin-top: 30px;
+    max-width: 800px;
+}
+
+.questions-section input,
+.questions-section textarea {
+    width: 100%;
+    padding: 8px;
+    margin-top: 10px;
+    border-radius: 4px;
+    border: 1px solid #ccc;
+}
+
+.questions-section button {
+    margin-top: 10px;
+    padding: 8px 12px;
+    background: #00796b;
+    color: #fff;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+}
+
+.questions-section button:hover {
+    background: #004d40;
+}
+
+.questions-section .hint {
+    font-size: 0.9rem;
+    color: #555;
+    margin-bottom: 10px;
+}
+
+#questions-list li {
+    background: #f9f9f9;
+    padding: 10px;
+    margin-top: 10px;
+    border-radius: 5px;
+}

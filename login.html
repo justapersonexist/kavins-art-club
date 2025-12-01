@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Art Club | Login</title>
+<style>
+body { font-family: Arial, sans-serif; background:#f4f4f4; margin:0; padding:0; }
+.navbar { background:#333; color:#fff; display:flex; justify-content:space-between; padding:10px 20px; align-items:center; }
+.navbar a { color:#fff; text-decoration:none; margin-left:20px; }
+section { padding:20px; max-width:400px; margin:50px auto; background:#fff; border-radius:8px; }
+input { width:100%; padding:8px; margin-top:10px; margin-bottom:15px; }
+button { padding:8px 15px; cursor:pointer; background:#00796b; color:white; border:none; border-radius:4px; }
+button:hover { background:#004d40; }
+</style>
+</head>
+<body>
+
+<header class="navbar">
+<h1 class="logo">Art Club</h1>
+<div>
+    <a href="index.html">Home</a>
+    <a href="signup.html">Sign Up</a>
+</div>
+</header>
+
+<section>
+<h2>Login</h2>
+<label>Username:</label>
+<input type="text" id="login-username" placeholder="Enter username">
+<label>Password:</label>
+<input type="password" id="login-password" placeholder="Enter password">
+<button id="login-btn">Login</button>
+<p>Don't have an account? <a href="signup.html">Sign up here</a></p>
+</section>
+
+<script>
+// -------------------------------
+// LOAD USERS
+// -------------------------------
+let users = JSON.parse(localStorage.getItem("users") || "[]");
+
+// -------------------------------
+// HARD-CODED CREATOR ACCOUNT
+// -------------------------------
+const creatorAccount = {
+    username: "justapersonexist",
+    password: "justarandom",
+    rank: "creator",
+    banned: false
+};
+
+// Ensure the creator account exists in localStorage
+if(!users.find(u => u.username === creatorAccount.username)){
+    users.push(creatorAccount);
+    localStorage.setItem("users", JSON.stringify(users));
+}
+
+// -------------------------------
+// LOGIN FUNCTION
+// -------------------------------
+document.getElementById("login-btn").addEventListener("click", () => {
+    const username = document.getElementById("login-username").value.trim();
+    const password = document.getElementById("login-password").value.trim();
+
+    if(!username || !password){
+        alert("Please fill in all fields.");
+        return;
+    }
+
+    // Check username/password against all users
+    const user = users.find(u => u.username === username && u.password === password);
+
+    if(user){
+        if(user.banned){
+            alert("You are banned from this site.");
+            return;
+        }
+
+        localStorage.setItem("currentUser", JSON.stringify(user));
+        alert(`Welcome back, ${username}!`);
+
+        // Redirect based on rank
+        if(user.rank === "creator"){
+            window.location.href = "creatoraccount.html";
+        } else {
+            window.location.href = "index.html";
+        }
+    } else {
+        alert("Incorrect username or password.");
+    }
+});
+</script>
+
+</body>
+</html>
