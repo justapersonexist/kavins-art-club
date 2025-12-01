@@ -1,0 +1,138 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Creator Dashboard | Art Club</title>
+<style>
+body { font-family: Arial, sans-serif; margin:0; padding:0; background:#f4f4f4; }
+header, section { padding:20px; }
+h1,h2,h3 { color:#333; }
+
+.navbar { background:#333; color:#fff; display:flex; justify-content:space-between; padding:10px 20px; align-items:center; }
+.navbar a { color:#fff; text-decoration:none; margin-left:20px; }
+.navbar button { padding:8px 15px; cursor:pointer; background:#00796b; color:white; border:none; border-radius:12px; transition: background 0.2s; }
+.navbar button:hover { background:#004d40; }
+
+section { max-width: 900px; margin: 20px auto; background:#fff; padding:20px; border-radius:12px; box-shadow:0 2px 8px rgba(0,0,0,0.1); }
+
+table { width: 100%; border-collapse: collapse; margin-top:20px; }
+th, td { padding:10px; border:1px solid #ccc; text-align:left; }
+th { background:#eee; }
+
+input, select { padding:6px 10px; margin:4px 0; }
+button.assign, button.update { background:#00796b; color:white; border:none; border-radius:6px; cursor:pointer; }
+button.assign:hover, button.update:hover { background:#004d40; }
+</style>
+</head>
+<body>
+
+<!-- Navbar -->
+<header class="navbar">
+<h1 class="logo">Art Club</h1>
+<div>
+<!-- Navbar -->
+<header class="navbar">
+<h1 class="logo">Art Club</h1>
+<div>
+<a href="index.html">Home</a>
+<a href="about.html">About</a>
+<a href="events.html">Events</a>
+<a href="latest-announcements.html">Announcement</a>
+<a href="questions.html">Questions</a>
+<a href="hall_of_fame.html">Hall of Fame</a>
+<a href="canvas.html">Collaborative Canvas</a>
+<a href="report.html">Report</a>
+    <a href="creator-dashboard.html" id="creator-link" style="display:none;">Creator Dashboard</a>
+    <button id="logout-btn">Logout</button>
+</div>
+</header>
+
+<section>
+<h1>Creator Dashboard</h1>
+<p>Manage users, assign ranks, and update passwords.</p>
+
+<table id="users-table">
+<thead>
+<tr>
+<th>Username</th>
+<th>Rank</th>
+<th>Assign Rank</th>
+<th>Change Password</th>
+</tr>
+</thead>
+<tbody>
+<!-- Users will be populated here -->
+</tbody>
+</table>
+</section>
+
+<script>
+// ------------------ PROTECT PAGE ------------------
+const currentUser = JSON.parse(localStorage.getItem("currentUser"));
+if(!currentUser || currentUser.rank !== "creator"){
+    alert("Access denied! Only creators can access this page.");
+    window.location.href = "index.html";
+}
+
+// Logout button
+document.getElementById("logout-btn").addEventListener("click", () => {
+    localStorage.removeItem("currentUser");
+    window.location.href = "login.html";
+});
+
+// ------------------ POPULATE USERS ------------------
+let users = JSON.parse(localStorage.getItem("users") || "[]");
+const tbody = document.querySelector("#users-table tbody");
+
+function renderUsers() {
+    tbody.innerHTML = "";
+    users.forEach((user, index) => {
+        const tr = document.createElement("tr");
+
+        tr.innerHTML = `
+            <td>${user.username}</td>
+            <td>${user.rank}</td>
+            <td>
+                <select id="rank-${index}">
+                    <option value="member" ${user.rank==="member"?"selected":""}>Member</option>
+                    <option value="creator" ${user.rank==="creator"?"selected":""}>Creator</option>
+                    <option value="admin" ${user.rank==="admin"?"selected":""}>Admin</option>
+                </select>
+                <button class="assign" data-index="${index}">Assign</button>
+            </td>
+            <td>
+                <input type="password" id="pass-${index}" placeholder="New password">
+                <button class="update" data-index="${index}">Update</button>
+            </td>
+        `;
+        tbody.appendChild(tr);
+    });
+}
+
+renderUsers();
+
+// ------------------ ASSIGN RANK ------------------
+tbody.addEventListener("click", e => {
+    if(e.target.classList.contains("assign")){
+        const index = e.target.dataset.index;
+        const newRank = document.getElementById(`rank-${index}`).value;
+        users[index].rank = newRank;
+        localStorage.setItem("users", JSON.stringify(users));
+        alert(`Rank of ${users[index].username} updated to ${newRank}`);
+        renderUsers();
+    }
+    if(e.target.classList.contains("update")){
+        const index = e.target.dataset.index;
+        const newPass = document.getElementById(`pass-${index}`).value;
+        if(newPass.trim() === "") { alert("Password cannot be empty"); return; }
+        users[index].password = newPass;
+        localStorage.setItem("users", JSON.stringify(users));
+        alert(`Password of ${users[index].username} updated!`);
+        renderUsers();
+    }
+});
+</script>
+
+</body>
+</html>

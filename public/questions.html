@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Art Club | Questions</title>
+<link rel="stylesheet" href="styles.css">
+</head>
+<body>
+
+<!-- Navbar -->
+<header>
+<nav class="navbar">
+<h1 class="logo">Art Club</h1>
+<ul class="nav-links">
+<!-- Navbar -->
+<header class="navbar">
+<h1 class="logo">Art Club</h1>
+<div>
+<a href="index.html">Home</a>
+<a href="about.html">About</a>
+<a href="events.html">Events</a>
+<a href="latest-announcements.html">Announcement</a>
+<a href="questions.html">Questions</a>
+<a href="hall_of_fame.html">Hall of Fame</a>
+<a href="canvas.html">Collaborative Canvas</a>
+<a href="report.html">Report</a>
+    <button id="logout-btn">Logout</button>
+    <a href="canvas.html">Collaborative Canvas</a>
+</ul>
+</nav>
+</header>
+
+<section class="page-content">
+<h1>Ask a Question</h1>
+<p>Have a question about Art Club, events, or our members? Fill out the form below:</p>
+
+<!-- Question Form -->
+<form id="question-form">
+    <input type="text" id="question-name" placeholder="Your Name">
+    <textarea id="question-text" placeholder="Your Question"></textarea>
+    <button type="submit">Submit</button>
+</form>
+
+<h2>Submitted Questions</h2>
+<ul id="questions-list">
+    <!-- Questions will appear here -->
+</ul>
+</section>
+
+<script src="questions.js"></script>
+<script>
+  // Check if user is logged in
+  const currentUser = JSON.parse(localStorage.getItem("currentUser"));
+  if(!currentUser){
+      window.location.href = "signup.html";
+  }
+
+  // Logout button
+  document.getElementById("logout-btn").addEventListener("click", () => {
+      localStorage.removeItem("currentUser");
+      window.location.href = "login.html";
+  });
+</script>
+
+</body>
+</html>

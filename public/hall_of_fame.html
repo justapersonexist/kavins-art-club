@@ -1,0 +1,275 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>🌟 Kids Art Hall of Fame 🌟</title>
+<style>
+  body {
+    font-family: 'Comic Sans MS', sans-serif;
+    margin: 0;
+    padding: 0;
+    background: linear-gradient(to right, #ffecd2, #fcb69f);
+    text-align: center;
+  }
+
+  /* Navbar */
+  .navbar {
+    background-color: #ff6f61;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 10px 20px;
+    box-shadow: 0 4px 6px rgba(0,0,0,0.2);
+    flex-wrap: wrap;
+  }
+  .navbar .logo { color: white; font-size: 1.8em; font-weight: bold; margin: 0; }
+  .navbar a { color: white; text-decoration: none; margin: 0 10px; font-weight: bold; }
+  .navbar a:hover { text-decoration: underline; }
+  #logout-btn { padding: 5px 15px; border: none; border-radius: 8px; background-color: #ffcc00; font-weight: bold; cursor: pointer; }
+
+  /* Hall of Fame Header */
+  header.hof-header {
+    background-color: #ffcc00;
+    color: #ff6f61;
+    padding: 15px;
+    font-size: 2em;
+    font-weight: bold;
+  }
+
+  /* Form */
+  form {
+    margin: 20px auto;
+    padding: 20px;
+    border: 3px dashed #ff9900;
+    width: 90%;
+    max-width: 450px;
+    background-color: #fff8dc;
+    border-radius: 15px;
+  }
+  input, textarea, button {
+    display: block;
+    margin: 10px auto;
+    width: 90%;
+    padding: 10px;
+    font-size: 1em;
+  }
+  button { background-color: #ffcc00; border: none; cursor: pointer; border-radius: 8px; font-weight: bold; }
+
+  /* Gallery */
+  .gallery {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+    gap: 15px;
+    margin: 20px;
+  }
+  .art-card {
+    background-color: #fff8dc;
+    border: 2px solid #ff9900;
+    border-radius: 10px;
+    padding: 5px;
+    position: relative;
+    transition: transform 0.3s, box-shadow 0.3s;
+    font-size: 0.9em;
+  }
+  .art-card:hover {
+    transform: scale(1.03);
+    box-shadow: 0 6px 10px rgba(0,0,0,0.2);
+  }
+  img { max-width: 100%; height: auto; border-radius: 6px; }
+
+  .badge {
+    position: absolute;
+    top: 5px;
+    right: 5px;
+    background-color: gold;
+    color: darkorange;
+    font-weight: bold;
+    padding: 3px 6px;
+    border-radius: 50%;
+    font-size: 0.8em;
+    display: none;
+  }
+
+  .like-button {
+    margin-top: 5px;
+    padding: 3px 10px;
+    background-color: #ff6f61;
+    color: white;
+    border: none;
+    border-radius: 6px;
+    cursor: pointer;
+    font-weight: bold;
+    font-size: 0.9em;
+  }
+
+  @media (max-width: 768px) {
+    .navbar { flex-direction: column; align-items: flex-start; }
+    .navbar div { margin-top: 10px; }
+  }
+</style>
+</head>
+<body>
+
+<!-- Navbar -->
+<header class="navbar">
+  <h1 class="logo">Art Club</h1>
+  <div>
+<!-- Navbar -->
+<header class="navbar">
+<h1 class="logo">Art Club</h1>
+<div>
+<a href="index.html">Home</a>
+<a href="about.html">About</a>
+<a href="events.html">Events</a>
+<a href="latest-announcements.html">Announcement</a>
+<a href="questions.html">Questions</a>
+<a href="hall_of_fame.html">Hall of Fame</a>
+<a href="canvas.html">Collaborative Canvas</a>
+<a href="report.html">Report</a>
+      <button id="logout-btn">Logout</button>
+  </div>
+</header>
+
+<header class="hof-header">🌟 Kids Art Hall of Fame 🌟</header>
+
+<!-- Art Submission Form -->
+<form id="artForm">
+  <input type="text" id="name" placeholder="Child's Name" required>
+  <input type="text" id="title" placeholder="Artwork Title" required>
+  <input type="file" id="image" accept="image/*" required>
+  <textarea id="description" placeholder="Describe your artwork"></textarea>
+  <button type="submit">Submit Artwork</button>
+</form>
+
+<!-- Art Gallery -->
+<div class="gallery" id="gallery"></div>
+
+<script>
+  const form = document.getElementById('artForm');
+  const gallery = document.getElementById('gallery');
+  const imageInput = document.getElementById('image');
+
+  // Mobile-friendly file input
+  const isMobile = /iPhone|iPad|iPod|Android/i.test(navigator.userAgent);
+  if (isMobile) {
+    const fileLabel = document.createElement('label');
+    fileLabel.textContent = 'Choose a photo';
+    fileLabel.setAttribute('for', 'image');
+    fileLabel.style.display = 'block';
+    fileLabel.style.margin = '10px auto';
+    fileLabel.style.cursor = 'pointer';
+    fileLabel.style.backgroundColor = '#ffcc00';
+    fileLabel.style.padding = '10px';
+    fileLabel.style.borderRadius = '8px';
+    fileLabel.style.width = '90%';
+    fileLabel.style.maxWidth = '450px';
+    fileLabel.style.fontWeight = 'bold';
+    imageInput.style.display = 'none';
+    imageInput.parentNode.insertBefore(fileLabel, imageInput.nextSibling);
+
+    imageInput.addEventListener('change', () => {
+      if (imageInput.files.length > 0) {
+        fileLabel.textContent = `Selected: ${imageInput.files[0].name}`;
+      }
+    });
+  }
+
+  function generateArtworkID(title, name) {
+    return `${title.replace(/\s/g,'_')}_${name.replace(/\s/g,'_')}`;
+  }
+
+  // Load artworks from localStorage
+  function loadArtworks() {
+    const artworks = JSON.parse(localStorage.getItem('artworks')) || [];
+    artworks.forEach(art => addArtCard(art));
+  }
+
+  function addArtCard({ artID, title, name, description, imageData, likes = 0 }) {
+    const artCard = document.createElement('div');
+    artCard.className = 'art-card';
+    artCard.innerHTML = `
+      <div class="badge">🏆</div>
+      <img src="${imageData}" alt="${title}">
+      <h4>${title}</h4>
+      <p>by ${name}</p>
+      <p>${description}</p>
+      <button class="like-button" data-id="${artID}">👏 ${likes}</button>
+    `;
+
+    const likeBtn = artCard.querySelector('.like-button');
+    const badge = artCard.querySelector('.badge');
+
+    if (likes >= 5) badge.style.display = 'block';
+
+    // One like per user per artwork
+    const storageKey = `liked_${artID}`;
+    if (!localStorage.getItem(storageKey)) {
+      likeBtn.addEventListener('click', () => {
+        likes++;
+        likeBtn.textContent = `👏 ${likes}`;
+        localStorage.setItem(storageKey, 'true');
+
+        // Update likes in localStorage
+        const allArts = JSON.parse(localStorage.getItem('artworks')) || [];
+        const artIndex = allArts.findIndex(a => a.artID === artID);
+        if (artIndex !== -1) {
+          allArts[artIndex].likes = likes;
+          localStorage.setItem('artworks', JSON.stringify(allArts));
+        }
+
+        likeBtn.disabled = true;
+        likeBtn.style.opacity = 0.6;
+        if (likes >= 5) badge.style.display = 'block';
+      });
+    } else {
+      likeBtn.disabled = true;
+      likeBtn.style.opacity = 0.6;
+    }
+
+    gallery.appendChild(artCard);
+  }
+
+  form.addEventListener('submit', (e) => {
+    e.preventDefault();
+
+    const name = document.getElementById('name').value;
+    const title = document.getElementById('title').value;
+    const description = document.getElementById('description').value;
+
+    if (imageInput.files && imageInput.files[0]) {
+      const reader = new FileReader();
+      reader.onload = function(e) {
+        const artID = generateArtworkID(title, name);
+        const newArt = {
+          artID,
+          title,
+          name,
+          description,
+          imageData: e.target.result,
+          likes: 0
+        };
+
+        // Save artwork in localStorage
+        const artworks = JSON.parse(localStorage.getItem('artworks')) || [];
+        artworks.push(newArt);
+        localStorage.setItem('artworks', JSON.stringify(artworks));
+
+        addArtCard(newArt);
+      }
+      reader.readAsDataURL(imageInput.files[0]);
+    }
+
+    form.reset();
+    if (isMobile) {
+      const fileLabel = imageInput.nextElementSibling;
+      if (fileLabel) fileLabel.textContent = 'Choose a photo';
+    }
+  });
+
+  // Initialize gallery
+  loadArtworks();
+</script>
+
+</body>
+</html>

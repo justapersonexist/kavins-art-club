@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Collaborative Canvas | Art Club</title>
+<link rel="stylesheet" href="style.css">
+<style>
+  /* Canvas-specific overrides */
+  #canvas {
+    border: 3px solid black;
+    background: white;
+    display: block;
+    margin: 20px auto;
+  }
+
+  .toolbar {
+    text-align: center;
+    margin-bottom: 20px;
+  }
+
+  .toolbar label {
+    margin-right: 20px;
+  }
+
+  .toolbar button {
+    padding: 8px 15px;
+    border-radius: 8px;
+    cursor: pointer;
+    border: none;
+    background: #0abfdf;
+    color: white;
+    font-weight: bold;
+  }
+
+  .toolbar button:hover {
+    background: #007c91;
+  }
+</style>
+</head>
+<body>
+
+<!-- Navbar -->
+<header class="navbar">
+  <h1 class="logo">Art Club</h1>
+  <div>
+<!-- Navbar -->
+<header class="navbar">
+<h1 class="logo">Art Club</h1>
+<div>
+<a href="index.html">Home</a>
+<a href="about.html">About</a>
+<a href="events.html">Events</a>
+<a href="latest-announcements.html">Announcement</a>
+<a href="questions.html">Questions</a>
+<a href="hall_of_fame.html">Hall of Fame</a>
+<a href="canvas.html">Collaborative Canvas</a>
+<a href="report.html">Report</a>
+    <button id="logout-btn">Logout</button>
+  </div>
+</header>
+
+<section style="padding:20px; text-align:center;">
+  <h1>🎨 Collaborative Canvas</h1>
+  <p>Draw together with other club members in real-time!</p>
+
+  <div class="toolbar">
+    <label>Color: <input type="color" id="colorPicker" value="#000000"></label>
+    <label>Brush: <input type="range" id="brushSize" min="1" max="25" value="5"></label>
+    <button id="clearBtn">Clear Canvas</button>
+  </div>
+
+  <canvas id="canvas" width="900" height="600"></canvas>
+</section>
+
+<script src="/socket.io/socket.io.js"></script>
+<script src="canvas-client.js"></script>
+
+<script>
+  // Auto-login check
+  const currentUser = JSON.parse(localStorage.getItem("currentUser"));
+  if(!currentUser) window.location.href = "signup.html";
+
+  // Logout
+  document.getElementById("logout-btn").addEventListener("click", () => {
+    localStorage.removeItem("currentUser");
+    window.location.href = "login.html";
+  });
+</script>
+
+</body>
+</html>

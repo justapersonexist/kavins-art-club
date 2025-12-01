@@ -1,0 +1,158 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Art Club | Events</title>
+<style>
+    body {
+        font-family: Arial, sans-serif;
+        margin:0;
+        padding:0;
+        background:#f4f4f4;
+    }
+    header, section {
+        padding:20px;
+    }
+    h1,h2,h3 {
+        color:#333;
+    }
+
+    /* Navbar */
+    .navbar {
+        background:#333;
+        color:#fff;
+        display:flex;
+        justify-content:space-between;
+        padding:10px 20px;
+        align-items:center;
+        flex-wrap: wrap;
+    }
+    .navbar a {
+        color:#fff;
+        text-decoration:none;
+        margin-left:20px;
+        margin-top:5px;
+    }
+    .navbar button {
+        padding:8px 15px;
+        cursor:pointer;
+        background:#00796b;
+        color:white;
+        border:none;
+        border-radius:12px;
+        transition: background 0.2s;
+        margin-top:5px;
+    }
+    .navbar button:hover {
+        background:#004d40;
+    }
+
+    /* Event List */
+    #event-list {
+        list-style:none;
+        padding:0;
+        margin-top:20px;
+    }
+    #event-list li {
+        background:#fff;
+        padding:15px;
+        border:1px solid #ccc;
+        margin-bottom:10px;
+        border-radius:8px;
+        transition:0.2s;
+        display:flex;
+        justify-content: space-between;
+        align-items: center;
+        flex-wrap: wrap;
+    }
+    #event-list li:hover {
+        background:#e0f7fa;
+    }
+
+    .category {
+        font-weight:bold;
+        color:#00796b;
+    }
+    .event-title {
+        margin-left:10px;
+        font-size:1rem;
+    }
+    .event-date {
+        font-style:italic;
+        color:#555;
+    }
+</style>
+</head>
+<body>
+
+<header class="navbar">
+    <h1 class="logo">Art Club</h1>
+    <div>
+<!-- Navbar -->
+<header class="navbar">
+<h1 class="logo">Art Club</h1>
+<div>
+<a href="index.html">Home</a>
+<a href="about.html">About</a>
+<a href="events.html">Events</a>
+<a href="latest-announcements.html">Announcement</a>
+<a href="questions.html">Questions</a>
+<a href="hall_of_fame.html">Hall of Fame</a>
+<a href="canvas.html">Collaborative Canvas</a>
+<a href="report.html">Report</a>
+        <button id="logout-btn">Logout</button>
+    </div>
+</header>
+
+<section class="page-content">
+<h2>Upcoming Events</h2>
+<ul id="event-list"></ul>
+</section>
+
+<script>
+    // --------------------- LOGIN CHECK ------------------------
+    const currentUser = JSON.parse(localStorage.getItem("currentUser"));
+    if(!currentUser) window.location.href = "signup.html";
+
+    document.getElementById("logout-btn").addEventListener("click", () => {
+        localStorage.removeItem("currentUser");
+        window.location.href = "login.html";
+    });
+
+    // --------------------- EVENTS DATA ------------------------
+    const events = [
+        { category: "Meeting Update", title: "Team Meeting on Club Projects", date: "none" },
+        { category: "Event Reminder", title: "Art Workshop Registration Deadline", date: "none" },
+        { category: "Important Info", title: "New Art Supplies Available", date: "none" },
+        { category: "Weekly Challenge", title: "Sketch Your Favorite Place", date: "none" },
+        { category: "Schedule Change", title: "Next Exhibition Moved to Friday", date: "none" }
+    ];
+
+    function formatDate(date){
+        return new Date(date).toLocaleDateString(undefined, { weekday:'long', month:'short', day:'numeric', year:'numeric' });
+    }
+
+    function loadEvents(){
+        const list = document.getElementById("event-list");
+        list.innerHTML = "";
+        if(events.length === 0){
+            const li = document.createElement("li");
+            li.textContent = "No upcoming events.";
+            list.appendChild(li);
+            return;
+        }
+        events.forEach(ev => {
+            const li = document.createElement("li");
+            li.innerHTML = `<span class="category">${ev.category}</span> 
+                            <span class="event-title">${ev.title}</span> 
+                            <span class="event-date">(${formatDate(ev.date)})</span>`;
+            list.appendChild(li);
+        });
+    }
+
+    loadEvents();
+</script>
+
+</body>
+</html>

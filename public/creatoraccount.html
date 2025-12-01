@@ -1,0 +1,113 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Art Club | Creator Panel</title>
+<style>
+body { font-family: Arial, sans-serif; background:#f4f4f4; margin:0; padding:0; }
+.navbar { background:#333; color:#fff; display:flex; justify-content:space-between; padding:10px 20px; align-items:center; }
+.navbar a { color:#fff; text-decoration:none; margin-left:20px; }
+section { padding:20px; max-width:600px; margin:50px auto; background:#fff; border-radius:8px; }
+button { padding:5px 10px; margin-left:5px; cursor:pointer; border:none; border-radius:4px; }
+button.kick { background:#f44336; color:white; }
+button.ban { background:#9c27b0; color:white; }
+button.call { background:#2196f3; color:white; }
+button:hover { opacity:0.9; }
+.user-row { display:flex; justify-content:space-between; align-items:center; padding:5px 0; border-bottom:1px solid #ccc; }
+</style>
+</head>
+<body>
+
+<header class="navbar">
+<h1 class="logo">Art Club Creator Panel</h1>
+<div>
+    <a href="index.html">Home</a>
+    <a href="#" id="logout-btn">Logout</a>
+</div>
+</header>
+
+<section>
+<h2>All Users</h2>
+<div id="user-list"></div>
+</section>
+
+<script>
+// Load users and currentUser
+let users = JSON.parse(localStorage.getItem("users") || "[]");
+let currentUser = JSON.parse(localStorage.getItem("currentUser") || "{}");
+
+// -------------------------------
+// Check if user is creator
+// -------------------------------
+if(currentUser.rank !== "creator"){
+    alert("Access denied. Only creator can view this page.");
+    window.location.href = "login.html";
+}
+
+// -------------------------------
+// Functions
+// -------------------------------
+function saveUsers() {
+    localStorage.setItem("users", JSON.stringify(users));
+}
+
+// Render user list
+function renderUsers(){
+    const list = document.getElementById("user-list");
+    list.innerHTML = "";
+
+    users.forEach((u, index) => {
+        // Skip creator account from being kicked/banned
+        const isCreator = u.rank === "creator";
+
+        const div = document.createElement("div");
+        div.className = "user-row";
+        div.innerHTML = `
+            <span>${u.username} (${u.rank}) ${u.banned ? "- BANNED" : ""}</span>
+            <span>
+                ${!isCreator ? `<button class="kick" data-index="${index}">Kick</button>` : ""}
+                ${!isCreator ? `<button class="ban" data-index="${index}">${u.banned ? "Unban" : "Ban"}</button>` : ""}
+                <button class="call" data-username="${u.username}">Call</button>
+            </span>
+        `;
+        list.appendChild(div);
+    });
+
+    // Add event listeners
+    document.querySelectorAll("button.kick").forEach(btn => {
+        btn.addEventListener("click", () => {
+            const idx = btn.getAttribute("data-index");
+            alert(`${users[idx].username} has been kicked!`);
+        });
+    });
+
+    document.querySelectorAll("button.ban").forEach(btn => {
+        btn.addEventListener("click", () => {
+            const idx = btn.getAttribute("data-index");
+            users[idx].banned = !users[idx].banned;
+            saveUsers();
+            renderUsers();
+        });
+    });
+
+    document.querySelectorAll("button.call").forEach(btn => {
+        btn.addEventListener("click", () => {
+            const uname = btn.getAttribute("data-username");
+            alert(`Calling ${uname}...`);
+        });
+    });
+}
+
+// Logout button
+document.getElementById("logout-btn").addEventListener("click", () => {
+    localStorage.removeItem("currentUser");
+    window.location.href = "login.html";
+});
+
+// Initial render
+renderUsers();
+</script>
+
+</body>
+</html>
