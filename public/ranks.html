@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Art Club | Art Rank</title>
+<title>Art Club | Art Ranks</title>
 <link rel="stylesheet" href="style.css">
 </head>
 <body>
@@ -23,8 +23,8 @@
 </header>
 
 <section class="page-content">
-  <h2>Art Rank System</h2>
-  <p>Every user starts as <strong>Beginner</strong>. Creators can promote users based on their art skills.</p>
+  <h2>Art Skill Ranks</h2>
+  <p>All users start as <strong>Beginner</strong>. Creators can promote users based on their art skills.</p>
 
   <table id="rank-table" border="1" cellpadding="8" cellspacing="0">
     <thead>
@@ -35,7 +35,7 @@
       </tr>
     </thead>
     <tbody>
-      <!-- Users will appear here dynamically -->
+      <!-- Users will populate here -->
     </tbody>
   </table>
 </section>
@@ -45,31 +45,52 @@ const currentUser = JSON.parse(localStorage.getItem("currentUser"));
 if(!currentUser) window.location.href = "signup.html";
 
 const users = JSON.parse(localStorage.getItem("users") || "[]");
+
+// Ensure every user has a rank (default Beginner)
+users.forEach(u => {
+    if(!u.rank) u.rank = "Beginner";
+});
+localStorage.setItem("users", JSON.stringify(users));
+
 const rankTableBody = document.querySelector("#rank-table tbody");
 
-// Render all users in the table
 function renderUsers() {
     rankTableBody.innerHTML = "";
+
     users.forEach((user, index) => {
         const tr = document.createElement("tr");
 
         tr.innerHTML = `
             <td>${user.username}</td>
-            <td>${user.rank || "Beginner"}</td>
-            <td>${currentUser.rank === "creator" && user.rank !== "creator" ? `<button onclick="promoteUser(${index})">Promote</button>` : ""}</td>
+            <td>${user.rank}</td>
+            <td>
+                ${currentUser.rank === "creator" && user.rank !== "creator" ? `<button onclick="promoteUser(${index})">Promote</button>` : ""}
+            </td>
         `;
         rankTableBody.appendChild(tr);
     });
 }
 
-// Promote a user (creator only)
+// Promotion logic: Beginner → Intermediate → Advanced → Master
 function promoteUser(index) {
     if(currentUser.rank !== "creator") return;
 
     const user = users[index];
-    if(user.rank === "Beginner") user.rank = "Intermediate";
-    else if(user.rank === "Intermediate") user.rank = "Advanced";
-    else if(user.rank === "Advanced") user.rank = "Master";
+
+    switch(user.rank) {
+        case "Beginner":
+            user.rank = "Intermediate";
+            break;
+        case "Intermediate":
+            user.rank = "Advanced";
+            break;
+        case "Advanced":
+            user.rank = "Master";
+            break;
+        case "Master":
+            alert(`${user.username} is already at the highest rank!`);
+            return;
+    }
 
     localStorage.setItem("users", JSON.stringify(users));
     renderUsers();
