@@ -6,94 +6,56 @@
 <title>Creator Dashboard | Art Club</title>
 
 <style>
-body { font-family: Arial, sans-serif; margin:0; padding:0; background:#f4f4f4; }
-header, section { padding:20px; }
-h1,h2,h3 { color:#333; }
+body { font-family: Arial, sans-serif; background:#f4f4f4; margin:0; }
+.navbar { background:#333; color:#fff; padding:10px 20px; display:flex; justify-content:space-between; align-items:center; }
+.navbar a { color:white; margin-left:20px; text-decoration:none; }
+.navbar button { background:#00796b; border:none; padding:8px 15px; border-radius:6px; cursor:pointer; color:white; }
 
-.navbar { background:#333; color:#fff; display:flex; justify-content:space-between; padding:10px 20px; align-items:center; }
-.navbar a { color:#fff; text-decoration:none; margin-left:20px; }
+.tab-bar { display:flex; background:white; padding:10px; gap:10px; justify-content:center; }
+.tab-button { padding:10px 15px; background:#ddd; border-radius:6px; cursor:pointer; }
+.tab-button.active { background:#00796b; color:white; }
 
-/* Tabs */
-.tab-bar {
-    display:flex;
-    background:white;
-    border-bottom:2px solid #ccc;
-    margin-top:20px;
-    border-radius:10px 10px 0 0;
-    overflow:hidden;
-}
-.tab-button {
-    flex:1;
-    padding:12px;
-    text-align:center;
-    cursor:pointer;
-    background:#eee;
-    border-right:1px solid #ccc;
-    font-weight:bold;
-}
-.tab-button.active {
-    background:white;
-    border-bottom:3px solid #00796b;
-}
-
-/* Sections */
-.tab-content {
-    display:none;
-    background:white;
-    padding:20px;
-    border-radius:0 0 10px 10px;
-    box-shadow:0 2px 8px rgba(0,0,0,0.1);
-    max-width:900px;
-    margin:auto;
-}
+.tab-content { display:none; max-width:900px; margin:20px auto; background:white; padding:20px; border-radius:10px; }
 .tab-content.active { display:block; }
 
-table { width:100%; border-collapse:collapse; margin-top:20px; }
-th, td { padding:10px; border:1px solid #ccc; text-align:left; }
+table { width:100%; border-collapse:collapse; margin-top:15px; }
+th, td { border:1px solid #ccc; padding:10px; }
 th { background:#eee; }
 
-input, select { padding:6px 10px; margin:4px 0; }
-button.assign, button.update {
+.search-box { width:100%; padding:10px; margin-bottom:15px; border:1px solid #ccc; border-radius:6px; }
+
+button.assign, button.update, button.delete-question { 
     background:#00796b; 
     color:white; 
+    padding:5px 10px; 
     border:none; 
     border-radius:6px; 
-    cursor:pointer;
-    padding:6px 10px;
+    cursor:pointer; 
 }
-button.assign:hover, button.update:hover { background:#004d40; }
-
-.search-box {
-    width:100%;
-    padding:10px;
-    margin-bottom:10px;
-    border-radius:6px;
-    border:1px solid #aaa;
-}
+button.delete-question { background:#b71c1c; }
 </style>
 </head>
 
 <body>
 
 <header class="navbar">
-<h1 class="logo">Art Club</h1>
-<div>
-<a href="index.html">Home</a>
-<button id="logout-btn">Logout</button>
-</div>
+  <h1>Creator Dashboard</h1>
+  <div>
+    <a href="index.html">Home</a>
+    <button id="logout-btn">Logout</button>
+  </div>
 </header>
 
 <!-- TAB BUTTONS -->
 <div class="tab-bar">
     <div class="tab-button active" data-tab="manage">Manage Users</div>
     <div class="tab-button" data-tab="allusers">All Users</div>
+    <div class="tab-button" data-tab="questions">Questions</div>
 </div>
 
-<!-- TAB 1: MANAGE USERS -->
+<!-- TAB 1: Manage Users -->
 <section id="manage" class="tab-content active">
-<h1>Creator Dashboard</h1>
-<p>Manage users, assign ranks, and update passwords.</p>
-
+<h2>Manage Users</h2>
 <table id="users-table">
 <thead>
 <tr>
@@ -107,10 +69,11 @@ button.assign:hover, button.update:hover { background:#004d40; }
 </table>
 </section>
 
-<!-- TAB 2: ALL USERS (VIEW ONLY) -->
+<!-- TAB 2: All Users -->
 <section id="allusers" class="tab-content">
-<h1>All Users</h1>
-<input type="text" id="search" class="search-box" placeholder="Search username...">
+<h2>All Users</h2>
+
+<input type="text" id="user-search" class="search-box" placeholder="Search users...">
 
 <table id="all-users-table">
 <thead>
@@ -124,11 +87,29 @@ button.assign:hover, button.update:hover { background:#004d40; }
 </table>
 </section>
 
+<!-- TAB 3: Questions -->
+<section id="questions" class="tab-content">
+<h2>Submitted Questions</h2>
+
+<input type="text" id="question-search" class="search-box" placeholder="Search questions...">
+
+<table id="question-table">
+<thead>
+<tr>
+<th>Name</th>
+<th>Question</th>
+<th>Actions</th>
+</tr>
+</thead>
+<tbody></tbody>
+</table>
+</section>
+
 <script>
 // ------------------ PROTECT PAGE ------------------
 const currentUser = JSON.parse(localStorage.getItem("currentUser"));
-if(!currentUser || currentUser.rank !== "creator"){
-    alert("Access denied! Only creators can access this page.");
+if (!currentUser || currentUser.rank !== "creator") {
+    alert("Access denied!");
     window.location.href = "index.html";
 }
 
@@ -137,26 +118,27 @@ document.getElementById("logout-btn").addEventListener("click", () => {
     window.location.href = "login.html";
 });
 
-// Load users
-let users = JSON.parse(localStorage.getItem("users") || "[]");
 
-// ------------------ TAB SWITCHER ------------------
+// ---------------- TAB SYSTEM ----------------
 document.querySelectorAll(".tab-button").forEach(btn => {
     btn.addEventListener("click", () => {
         document.querySelectorAll(".tab-button").forEach(b => b.classList.remove("active"));
-        btn.classList.add("active");
+        document.querySelectorAll(".tab-content").forEach(t => t.classList.remove("active"));
 
-        document.querySelectorAll(".tab-content").forEach(tab => tab.classList.remove("active"));
+        btn.classList.add("active");
         document.getElementById(btn.dataset.tab).classList.add("active");
     });
 });
 
-// ------------------ RENDER MANAGE USERS TABLE ------------------
-const tbody = document.querySelector("#users-table tbody");
+
+// ---------------- LOAD USERS ----------------
+let users = JSON.parse(localStorage.getItem("users") || "[]");
+
+const usersBody = document.querySelector("#users-table tbody");
+const allUsersBody = document.querySelector("#all-users-table tbody");
 
 function renderManageUsers() {
-    tbody.innerHTML = "";
-
+    usersBody.innerHTML = "";
     users.forEach((user, index) => {
         const tr = document.createElement("tr");
 
@@ -165,11 +147,9 @@ function renderManageUsers() {
             <td>${user.rank}</td>
             <td>
                 <select id="rank-${index}">
-                    <option value="Beginner">Beginner</option>
-                    <option value="Intermediate">Intermediate</option>
-                    <option value="Advanced">Advanced</option>
-                    <option value="Master">Master</option>
-                    <option value="creator">Creator</option>
+                    <option value="member" ${user.rank==="member"?"selected":""}>Member</option>
+                    <option value="creator" ${user.rank==="creator"?"selected":""}>Creator</option>
+                    <option value="admin" ${user.rank==="admin"?"selected":""}>Admin</option>
                 </select>
                 <button class="assign" data-index="${index}">Assign</button>
             </td>
@@ -178,59 +158,94 @@ function renderManageUsers() {
                 <button class="update" data-index="${index}">Update</button>
             </td>
         `;
-        tbody.appendChild(tr);
+
+        usersBody.appendChild(tr);
     });
 }
 
 renderManageUsers();
 
-// ------------------ ASSIGN RANK & UPDATE PASSWORD ------------------
-tbody.addEventListener("click", e => {
-    let index = e.target.dataset.index;
+// Assign rank + password change
+usersBody.addEventListener("click", e => {
+    const idx = e.target.dataset.index;
 
     if (e.target.classList.contains("assign")) {
-        users[index].rank = document.getElementById(`rank-${index}`).value;
+        users[idx].rank = document.getElementById(`rank-${idx}`).value;
+        alert("Rank updated!");
         localStorage.setItem("users", JSON.stringify(users));
         renderManageUsers();
-        renderAllUsers();
-        alert("Rank updated!");
     }
 
     if (e.target.classList.contains("update")) {
-        const newPass = document.getElementById(`pass-${index}`).value;
-        if (!newPass.trim()) return alert("Password cannot be empty.");
-        users[index].password = newPass;
+        const newPass = document.getElementById(`pass-${idx}`).value;
+        if (newPass.trim() === "") return alert("Password cannot be empty.");
+
+        users[idx].password = newPass;
+        alert("Password updated!");
         localStorage.setItem("users", JSON.stringify(users));
         renderManageUsers();
-        renderAllUsers();
-        alert("Password updated!");
     }
 });
 
-// ------------------ RENDER ALL USERS TAB ------------------
-const allUsersBody = document.querySelector("#all-users-table tbody");
 
+// ---------------- ALL USERS TAB ----------------
 function renderAllUsers(filter = "") {
     allUsersBody.innerHTML = "";
 
     users
-        .filter(u => u.username.toLowerCase().includes(filter.toLowerCase()))
-        .forEach(u => {
-            const tr = document.createElement("tr");
-            tr.innerHTML = `
-                <td>${u.username}</td>
-                <td>${u.password}</td>
-                <td>${u.rank}</td>
-            `;
-            allUsersBody.appendChild(tr);
-        });
+    .filter(u => u.username.toLowerCase().includes(filter.toLowerCase()))
+    .forEach(u => {
+        const tr = document.createElement("tr");
+        tr.innerHTML = `
+            <td>${u.username}</td>
+            <td>${u.password}</td>
+            <td>${u.rank}</td>
+        `;
+        allUsersBody.appendChild(tr);
+    });
 }
 
 renderAllUsers();
 
-// ------------------ SEARCH BAR ------------------
-document.getElementById("search").addEventListener("input", e => {
+document.getElementById("user-search").addEventListener("input", e => {
     renderAllUsers(e.target.value);
+});
+
+
+// ---------------- QUESTIONS TAB ----------------
+let questions = JSON.parse(localStorage.getItem("questions") || "[]");
+const questionBody = document.querySelector("#question-table tbody");
+
+function renderQuestions(filter = "") {
+    questionBody.innerHTML = "";
+
+    questions
+    .filter(q => q.name.toLowerCase().includes(filter.toLowerCase()) ||
+                 q.text.toLowerCase().includes(filter.toLowerCase()))
+    .forEach((q, index) => {
+        const tr = document.createElement("tr");
+        tr.innerHTML = `
+            <td>${q.name}</td>
+            <td>${q.text}</td>
+            <td><button class="delete-question" data-index="${index}">Delete</button></td>
+        `;
+        questionBody.appendChild(tr);
+    });
+}
+
+renderQuestions();
+
+document.getElementById("question-search").addEventListener("input", e => {
+    renderQuestions(e.target.value);
+});
+
+questionBody.addEventListener("click", e => {
+    if (e.target.classList.contains("delete-question")) {
+        const idx = e.target.dataset.index;
+        questions.splice(idx, 1);
+        localStorage.setItem("questions", JSON.stringify(questions));
+        renderQuestions();
+    }
 });
 </script>
 
