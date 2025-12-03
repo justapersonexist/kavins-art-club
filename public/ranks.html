@@ -6,7 +6,7 @@
 <title>Art Club | Rank System</title>
 
 <style>
-/* ---------- STYLING (MORE COLORFUL, NICE, MODERN) ---------- */
+/* ---------- MODERN COLORFUL UI ---------- */
 body {
     font-family: Arial, sans-serif;
     margin:0;
@@ -49,7 +49,7 @@ body {
     transform: scale(1.05);
 }
 
-/* Page content */
+/* Content */
 section {
     padding:30px;
 }
@@ -95,7 +95,22 @@ button.promote:hover {
     transform: scale(1.1);
 }
 
-/* Fade-in effect */
+/* Rank Badges */
+.badge {
+    padding: 6px 12px;
+    border-radius: 20px;
+    color: white;
+    font-size: 12px;
+    display: inline-block;
+    font-weight: bold;
+}
+.badge-beginner { background: #9e9e9e; }
+.badge-intermediate { background: #42a5f5; }
+.badge-advanced { background: #ef5350; }
+.badge-master { background: #ab47bc; }
+.badge-creator { background: #ffd600; color:#333; }
+
+/* Smooth row animation */
 tr {
     animation: fadeIn 0.4s ease-in-out;
 }
@@ -119,7 +134,7 @@ tr {
 </header>
 
 <section>
-<h2>Member Rank System</h2>
+<h2>User Ranks</h2>
 <p>Only the creator can promote users to higher ranks.</p>
 
 <table id="users-table">
@@ -141,14 +156,29 @@ if(!currentUser) window.location.href = "signup.html";
 
 const CREATOR_USERNAME = "justapersonexist";
 
-function isCreator(user) {
-    return user.rank === "creator" || user.username === CREATOR_USERNAME;
-}
-
 document.getElementById("logout-btn").addEventListener("click", ()=>{
     localStorage.removeItem("currentUser");
     window.location.href = "login.html";
 });
+
+// -------------------- BADGE FUNCTION --------------------
+function getBadge(rank) {
+    switch(rank) {
+        case "Beginner": 
+            return `<span class="badge badge-beginner">⭐ Beginner</span>`;
+        case "Intermediate": 
+            return `<span class="badge badge-intermediate">🔷 Intermediate</span>`;
+        case "Advanced": 
+            return `<span class="badge badge-advanced">🔥 Advanced</span>`;
+        case "Master": 
+            return `<span class="badge badge-master">👑 Master</span>`;
+        case "creator":
+        case "Creator":
+            return `<span class="badge badge-creator">🌟 Creator</span>`;
+        default:
+            return `<span class="badge badge-beginner">⭐ Beginner</span>`;
+    }
+}
 
 // -------------------- LOAD USERS --------------------
 function loadUsers() {
@@ -160,7 +190,7 @@ function loadUsers() {
         const tr = document.createElement("tr");
         tr.innerHTML = `
             <td>${user.username}</td>
-            <td>${user.rank || "Beginner"}</td>
+            <td>${getBadge(user.rank || "Beginner")}</td>
             <td>
                 ${
                     currentUser.username === CREATOR_USERNAME && 
@@ -174,7 +204,7 @@ function loadUsers() {
     });
 }
 
-// -------------------- PROMOTE USER --------------------
+// -------------------- PROMOTION SYSTEM --------------------
 function promoteUser(index){
     const users = JSON.parse(localStorage.getItem("users") || "[]");
     const user = users[index];
