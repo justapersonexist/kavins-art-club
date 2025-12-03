@@ -3,197 +3,199 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Art Club | Art Ranks</title>
+<title>Art Club | Rank System</title>
 
 <style>
-/* ---------- Navbar ---------- */
-.navbar {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    padding: 15px 5%;
-    background: red;
-    border-bottom: 3px solid #00e1ff;
-}
-
-.navbar .logo {
-    font-size: 1.8rem;
-    font-weight: bold;
-    color: white;
-}
-
-.nav-links {
-    list-style: none;
-    display: flex;
-    gap: 20px;
-}
-
-.nav-links li a {
-    text-decoration: none;
-    color: white;
-    font-weight: bold;
-}
-
-.nav-links li a:hover {
-    color: yellow;
-}
-
-/* ---------- Table ---------- */
+/* ---------- STYLING (MORE COLORFUL, NICE, MODERN) ---------- */
 body {
     font-family: Arial, sans-serif;
-    background: #ffa34d;
-    padding: 20px;
+    margin:0;
+    padding:0;
+    background: linear-gradient(135deg, #fbe9e7, #e1f5fe);
 }
 
-table {
-    width: 100%;
-    border-collapse: collapse;
-    margin-top: 20px;
-    background: white;
-    border-radius: 8px;
-    overflow: hidden;
+/* Navbar */
+.navbar {
+    background: linear-gradient(90deg, #7b1fa2, #3949ab);
+    color:#fff;
+    display:flex;
+    justify-content:space-between;
+    padding:15px 25px;
+    align-items:center;
+    flex-wrap: wrap;
+    box-shadow:0 3px 10px rgba(0,0,0,0.2);
 }
-
-th, td {
-    padding: 12px;
-    text-align: left;
-    border-bottom: 1px solid #ccc;
-}
-
-/* ---------- Buttons ---------- */
-button {
-    padding: 6px 12px;
-    cursor: pointer;
-    background: #00796b;
-    color: white;
-    border: none;
-    border-radius: 6px;
-}
-
-button:hover {
-    background: #004d40;
-}
-
-/* ---------- Rank Badges ---------- */
-.rank-badge {
-    padding: 4px 8px;
-    border-radius: 12px;
+.navbar a {
+    color:#fff;
+    text-decoration:none;
+    margin-left:20px;
     font-weight: bold;
-    color: white;
+    transition:0.2s;
+}
+.navbar a:hover {
+    color:#ffeb3b;
+}
+.navbar button {
+    padding:8px 15px;
+    cursor:pointer;
+    background:#ff7043;
+    color:white;
+    border:none;
+    border-radius:12px;
+    transition: background 0.2s, transform 0.2s;
+}
+.navbar button:hover {
+    background:#ff5722;
+    transform: scale(1.05);
 }
 
-.User { background: gray; }
-.Beginner { background: blue; }
-.Intermediate { background: green; }
-.Advanced { background: purple; }
-.Master { background: gold; color: black; }
-.creator { background: red; }
+/* Page content */
+section {
+    padding:30px;
+}
+h2 {
+    color:#303f9f;
+    font-size:28px;
+}
+
+/* Table */
+table {
+    width:100%;
+    border-collapse:collapse;
+    margin-top:20px;
+    background:#ffffffdd;
+    backdrop-filter: blur(5px);
+    border-radius:10px;
+    overflow:hidden;
+    box-shadow:0 5px 15px rgba(0,0,0,0.2);
+}
+th {
+    background:#3949ab;
+    color:white;
+    padding:12px;
+}
+td {
+    padding:12px;
+    border-bottom:1px solid #ccc;
+}
+
+/* Promote button */
+button.promote {
+    padding:6px 12px;
+    cursor:pointer;
+    background:#ff9800;
+    border:none;
+    border-radius:6px;
+    color:#fff;
+    font-weight:bold;
+    transition: all 0.2s;
+}
+button.promote:hover {
+    background:#fb8c00;
+    transform: scale(1.1);
+}
+
+/* Fade-in effect */
+tr {
+    animation: fadeIn 0.4s ease-in-out;
+}
+@keyframes fadeIn {
+    from {opacity:0; transform: translateY(5px);}
+    to {opacity:1; transform: translateY(0);}
+}
 </style>
 </head>
+
 <body>
 
-<!-- ✔️ NAVBAR -->
 <header class="navbar">
-    <h1 class="logo">Art Club</h1>
-    <ul class="nav-links">
-        <li><a href="index.html">Home</a></li>
-        <li><a href="about.html">About</a></li>
-        <li><a href="events.html">Events</a></li>
-        <li><a href="latest-announcements.html">Announcement</a></li>
-        <li><a href="questions.html">Questions</a></li>
-        <li><a href="hall_of_fame.html">Hall of Fame</a></li>
-        <li><a href="canvas.html">Collaborative Canvas</a></li>
-        <li><a href="ranks.html">Art Rank</a></li>
-    </ul>
+    <h1 class="logo">🎨 Art Club</h1>
+    <div>
+        <a href="index.html">Home</a>
+        <a href="latest-announcements.html">Announcements</a>
+        <a href="rank.html">Ranks</a>
+        <button id="logout-btn">Logout</button>
+    </div>
 </header>
 
-<h2>Art Skill Ranks</h2>
-<p>All users start as <strong>User</strong>. Creators can promote users.</p>
+<section>
+<h2>Member Rank System</h2>
+<p>Only the creator can promote users to higher ranks.</p>
 
-<table id="rank-table">
+<table id="users-table">
     <thead>
-        <tr>
-            <th>Username</th>
-            <th>Rank</th>
-            <th>Action</th>
-        </tr>
+    <tr>
+        <th>Username</th>
+        <th>Rank</th>
+        <th>Promote</th>
+    </tr>
     </thead>
     <tbody></tbody>
 </table>
-
+</section>
 
 <script>
-// ---------------------- Load current user ----------------------
-let currentUser = JSON.parse(localStorage.getItem("currentUser"));
-if (!currentUser) {
-    alert("Please log in.");
-    window.location.href = "signup.html";
+// -------------------- LOGIN CHECK --------------------
+const currentUser = JSON.parse(localStorage.getItem("currentUser"));
+if(!currentUser) window.location.href = "signup.html";
+
+const CREATOR_USERNAME = "justapersonexist";
+
+function isCreator(user) {
+    return user.rank === "creator" || user.username === CREATOR_USERNAME;
 }
 
-// ---------------------- Load all users ----------------------
-let users = JSON.parse(localStorage.getItem("users") || "[]");
-
-// Make sure every user has a rank
-users.forEach(u => {
-    if (!u.rank) u.rank = "User";
+document.getElementById("logout-btn").addEventListener("click", ()=>{
+    localStorage.removeItem("currentUser");
+    window.location.href = "login.html";
 });
-localStorage.setItem("users", JSON.stringify(users));
 
-const tbody = document.querySelector("#rank-table tbody");
-
-// ---------------------- Show users ----------------------
-function renderUsers() {
+// -------------------- LOAD USERS --------------------
+function loadUsers() {
+    const users = JSON.parse(localStorage.getItem("users") || "[]");
+    const tbody = document.querySelector("#users-table tbody");
     tbody.innerHTML = "";
 
-    users.forEach((user, index) => {
+    users.forEach((user, index)=>{
         const tr = document.createElement("tr");
-
-        const badge = `<span class="rank-badge ${user.rank}">${user.rank}</span>`;
-
         tr.innerHTML = `
             <td>${user.username}</td>
-            <td>${badge}</td>
+            <td>${user.rank || "Beginner"}</td>
             <td>
                 ${
-                    currentUser.rank === "creator" && user.rank !== "creator"
-                    ? `<button class="promote-btn" data-i="${index}">Promote</button>`
-                    : ""
+                    currentUser.username === CREATOR_USERNAME && 
+                    user.username !== CREATOR_USERNAME
+                    ? `<button class="promote" onclick="promoteUser(${index})">Promote</button>`
+                    : "-"
                 }
             </td>
         `;
-
         tbody.appendChild(tr);
     });
-
-    document.querySelectorAll(".promote-btn").forEach(btn => {
-        btn.addEventListener("click", () => {
-            promoteUser(btn.getAttribute("data-i"));
-        });
-    });
 }
 
-// ---------------------- Promotion logic ----------------------
-function promoteUser(i) {
-    const user = users[i];
+// -------------------- PROMOTE USER --------------------
+function promoteUser(index){
+    const users = JSON.parse(localStorage.getItem("users") || "[]");
+    const user = users[index];
 
-    switch (user.rank) {
-        case "User": user.rank = "Beginner"; break;
-        case "Beginner": user.rank = "Intermediate"; break;
-        case "Intermediate": user.rank = "Advanced"; break;
-        case "Advanced": user.rank = "Master"; break;
-        case "Master":
-            alert("Already highest rank!");
-            return;
+    const ranks = ["Beginner", "Intermediate", "Advanced", "Master"];
+    let currentRankIndex = ranks.indexOf(user.rank || "Beginner");
+
+    if(currentRankIndex < ranks.length - 1){
+        user.rank = ranks[currentRankIndex + 1];
+        users[index] = user;
+        localStorage.setItem("users", JSON.stringify(users));
+        alert(`${user.username} promoted to ${user.rank}!`);
+        loadUsers();
+    } else {
+        alert(`${user.username} is already at the highest rank!`);
     }
-
-    localStorage.setItem("users", JSON.stringify(users));
-    renderUsers();
 }
 
-// ---------------------- Start ----------------------
-renderUsers();
+// -------------------- INIT --------------------
+loadUsers();
 </script>
-
 
 </body>
 </html>
