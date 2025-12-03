@@ -4,102 +4,185 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Art Club | Art Ranks</title>
+
 <style>
-  body { font-family: Arial, sans-serif; padding: 20px; }
-  table { width: 100%; border-collapse: collapse; margin-top: 20px; }
-  th, td { padding: 12px; text-align: left; border-bottom: 1px solid #ccc; }
-  button { padding: 6px 12px; cursor: pointer; background: #00796b; color: white; border: none; border-radius: 6px; }
-  button:hover { background: #004d40; }
-  .rank-badge { padding: 4px 8px; border-radius: 12px; color: white; font-weight: bold; }
-  .User { background-color: gray; }
-  .Beginner { background-color: blue; }
-  .Intermediate { background-color: green; }
-  .Advanced { background-color: purple; }
-  .Master { background-color: gold; color: black; }
-  .creator { background-color: red; }
+/* ---------- Navbar ---------- */
+.navbar {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 15px 5%;
+    background: red;
+    border-bottom: 3px solid #00e1ff;
+}
+
+.navbar .logo {
+    font-size: 1.8rem;
+    font-weight: bold;
+    color: white;
+}
+
+.nav-links {
+    list-style: none;
+    display: flex;
+    gap: 20px;
+}
+
+.nav-links li a {
+    text-decoration: none;
+    color: white;
+    font-weight: bold;
+}
+
+.nav-links li a:hover {
+    color: yellow;
+}
+
+/* ---------- Table ---------- */
+body {
+    font-family: Arial, sans-serif;
+    background: #ffa34d;
+    padding: 20px;
+}
+
+table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-top: 20px;
+    background: white;
+    border-radius: 8px;
+    overflow: hidden;
+}
+
+th, td {
+    padding: 12px;
+    text-align: left;
+    border-bottom: 1px solid #ccc;
+}
+
+/* ---------- Buttons ---------- */
+button {
+    padding: 6px 12px;
+    cursor: pointer;
+    background: #00796b;
+    color: white;
+    border: none;
+    border-radius: 6px;
+}
+
+button:hover {
+    background: #004d40;
+}
+
+/* ---------- Rank Badges ---------- */
+.rank-badge {
+    padding: 4px 8px;
+    border-radius: 12px;
+    font-weight: bold;
+    color: white;
+}
+
+.User { background: gray; }
+.Beginner { background: blue; }
+.Intermediate { background: green; }
+.Advanced { background: purple; }
+.Master { background: gold; color: black; }
+.creator { background: red; }
 </style>
 </head>
 <body>
 
+<!-- ✔️ NAVBAR -->
+<header class="navbar">
+    <h1 class="logo">Art Club</h1>
+    <ul class="nav-links">
+        <li><a href="index.html">Home</a></li>
+        <li><a href="about.html">About</a></li>
+        <li><a href="events.html">Events</a></li>
+        <li><a href="latest-announcements.html">Announcement</a></li>
+        <li><a href="questions.html">Questions</a></li>
+        <li><a href="hall_of_fame.html">Hall of Fame</a></li>
+        <li><a href="canvas.html">Collaborative Canvas</a></li>
+        <li><a href="ranks.html">Art Rank</a></li>
+    </ul>
+</header>
+
 <h2>Art Skill Ranks</h2>
-<p>All new users start as <strong>User</strong>. Creators can promote users to higher ranks.</p>
+<p>All users start as <strong>User</strong>. Creators can promote users.</p>
 
 <table id="rank-table">
-  <thead>
-    <tr>
-      <th>Username</th>
-      <th>Rank</th>
-      <th>Action (Creator Only)</th>
-    </tr>
-  </thead>
-  <tbody></tbody>
+    <thead>
+        <tr>
+            <th>Username</th>
+            <th>Rank</th>
+            <th>Action</th>
+        </tr>
+    </thead>
+    <tbody></tbody>
 </table>
+
 
 <script>
 // ---------------------- Load current user ----------------------
 let currentUser = JSON.parse(localStorage.getItem("currentUser"));
-
-// For testing, if you don't have a creator logged in:
-// Uncomment this to force a creator for testing
-// currentUser = { username: "admin", rank: "creator" };
-// localStorage.setItem("currentUser", JSON.stringify(currentUser));
-
 if (!currentUser) {
-  alert("Please log in first.");
-  window.location.href = "signup.html";
+    alert("Please log in.");
+    window.location.href = "signup.html";
 }
 
-// ---------------------- Load users ----------------------
+// ---------------------- Load all users ----------------------
 let users = JSON.parse(localStorage.getItem("users") || "[]");
 
-// Ensure every user has a rank
-users.forEach(u => { if(!u.rank) u.rank = "User"; });
+// Make sure every user has a rank
+users.forEach(u => {
+    if (!u.rank) u.rank = "User";
+});
 localStorage.setItem("users", JSON.stringify(users));
 
-const rankTableBody = document.querySelector("#rank-table tbody");
+const tbody = document.querySelector("#rank-table tbody");
 
-// ---------------------- Render users ----------------------
+// ---------------------- Show users ----------------------
 function renderUsers() {
-    rankTableBody.innerHTML = "";
+    tbody.innerHTML = "";
 
     users.forEach((user, index) => {
-        const rankBadge = `<span class="rank-badge ${user.rank}">${user.rank}</span>`;
-
         const tr = document.createElement("tr");
+
+        const badge = `<span class="rank-badge ${user.rank}">${user.rank}</span>`;
+
         tr.innerHTML = `
             <td>${user.username}</td>
-            <td>${rankBadge}</td>
+            <td>${badge}</td>
             <td>
                 ${
-                    currentUser.rank === "creator" && user.rank !== "creator" 
-                    ? `<button data-index="${index}">Promote</button>` 
+                    currentUser.rank === "creator" && user.rank !== "creator"
+                    ? `<button class="promote-btn" data-i="${index}">Promote</button>`
                     : ""
                 }
             </td>
         `;
-        rankTableBody.appendChild(tr);
+
+        tbody.appendChild(tr);
     });
 
-    // Add event listeners after creating buttons
-    document.querySelectorAll("#rank-table button").forEach(btn => {
+    document.querySelectorAll(".promote-btn").forEach(btn => {
         btn.addEventListener("click", () => {
-            const i = btn.getAttribute("data-index");
-            promoteUser(i);
+            promoteUser(btn.getAttribute("data-i"));
         });
     });
 }
 
-// ---------------------- Promote logic ----------------------
-function promoteUser(index) {
-    const user = users[index];
+// ---------------------- Promotion logic ----------------------
+function promoteUser(i) {
+    const user = users[i];
 
-    switch(user.rank) {
+    switch (user.rank) {
         case "User": user.rank = "Beginner"; break;
         case "Beginner": user.rank = "Intermediate"; break;
         case "Intermediate": user.rank = "Advanced"; break;
         case "Advanced": user.rank = "Master"; break;
         case "Master":
-            alert(`${user.username} is already at the highest rank!`);
+            alert("Already highest rank!");
             return;
     }
 
@@ -107,8 +190,10 @@ function promoteUser(index) {
     renderUsers();
 }
 
-// ---------------------- Initial render ----------------------
+// ---------------------- Start ----------------------
 renderUsers();
 </script>
+
+
 </body>
 </html>
