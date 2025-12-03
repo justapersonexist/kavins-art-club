@@ -138,7 +138,14 @@ h1,h2,h3 { color:#333; }
 // ------------------ LOGIN CHECK ------------------
 const currentUser = JSON.parse(localStorage.getItem("currentUser"));
 if(!currentUser) window.location.href = "login.html";
+
+// Show creator dashboard link if user is creator
+if(currentUser.rank === "creator"){
+    document.getElementById("creator-link").style.display = "inline-block";
+}
+
 document.getElementById("user-info").innerText = `${currentUser.username} (${currentUser.rank})`;
+
 document.getElementById("logout-btn").addEventListener("click", () => {
     localStorage.removeItem("currentUser");
     window.location.href = "login.html";
@@ -150,16 +157,14 @@ function showPromotion(rank){
     document.getElementById("promotion-message").innerText = `Your art rank has been promoted to: ${rank}!`;
     modal.style.display = "flex";
 }
-document.getElementById("close-promo").addEventListener("click", ()=>{
-    document.getElementById("promotion-modal").style.display="none";
-});
+document.getElementById("close-promo").addEventListener("click", ()=>{ document.getElementById("promotion-modal").style.display="none"; });
 
-// Example: check if user was promoted
+// Show promotion if rank changed
 const users = JSON.parse(localStorage.getItem("users") || "[]");
 const realUser = users.find(u => u.username === currentUser.username);
 const lastRank = localStorage.getItem(currentUser.username + "_lastRank");
 if(lastRank && lastRank !== realUser.rank){
-    showPromotion(realUser.rank); // show modal only if promoted
+    showPromotion(realUser.rank);
 }
 localStorage.setItem(currentUser.username + "_lastRank", realUser.rank);
 
@@ -186,9 +191,7 @@ if(storedTip && storedTip.date === today){
 }
 
 // ------------------ APPOINTMENTS PREVIEW ------------------
-function formatDate(date){
-    return date.toLocaleDateString(undefined, { weekday:'long', month:'short', day:'numeric', year:'numeric' });
-}
+function formatDate(date){ return date.toLocaleDateString(undefined, { weekday:'long', month:'short', day:'numeric', year:'numeric' }); }
 const appointmentsList = document.getElementById("appointments-list");
 const saved = JSON.parse(localStorage.getItem("appointments") || "[]");
 const userAppointments = saved.filter(app => app.username === currentUser.username);
