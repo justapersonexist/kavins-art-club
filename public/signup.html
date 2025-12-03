@@ -44,23 +44,29 @@ button:hover { background:#004d40; }
 </section>
 
 <script>
-// Load existing users or make empty list
+// Load stored users
 let users = JSON.parse(localStorage.getItem("users") || "[]");
 
-// Add default admin only if missing
-if (!users.find(u => u.username === "admin")) {
-    users.push({ username: "admin", password: "password123", rank: "creator" });
+// Default admin account
+if (!users.find(u => u.username === "King bob")) {
+    users.push({ username: "King bob", password: "zimsin-qeCny9-dovqem", rank: "creator" });
     localStorage.setItem("users", JSON.stringify(users));
 }
 
-// Signup button
+// Signup button logic
 document.getElementById("signup-btn").addEventListener("click", () => {
     const username = document.getElementById("signup-username").value.trim();
     const password = document.getElementById("signup-password").value.trim();
-    const age = document.getElementById("signup-age").value.trim();
+    const age = parseInt(document.getElementById("signup-age").value.trim());
 
-    if (!username || !password || !age) {
+    if (!username || !password || isNaN(age)) {
         alert("Please fill in all fields.");
+        return;
+    }
+
+    // AGE LIMIT CHECK: 7 to 14 years old
+    if (age < 7 || age > 14) {
+        alert("Only children ages 7 to 14 can sign up.");
         return;
     }
 
