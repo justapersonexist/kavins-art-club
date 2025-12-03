@@ -5,7 +5,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Art Club | Home</title>
 <style>
-/* General Styles */
+/* -------- GENERAL STYLES -------- */
 body { font-family: Arial, sans-serif; margin:0; padding:0; background:#f4f4f4; }
 header, section { padding:20px; }
 h1,h2,h3 { color:#333; }
@@ -14,22 +14,20 @@ h1,h2,h3 { color:#333; }
 .navbar { background:#333; color:#fff; display:flex; justify-content:space-between; padding:10px 20px; align-items:center; flex-wrap:wrap; }
 .navbar a { color:#fff; text-decoration:none; margin-left:20px; }
 .navbar button { 
-    padding:8px 15px; 
-    cursor:pointer; 
-    background:#00796b; 
-    color:white; 
-    border:none; 
-    border-radius:12px; 
-    transition: background 0.2s; 
+    padding:8px 15px; cursor:pointer; 
+    background:#00796b; color:white; 
+    border:none; border-radius:12px; transition: background 0.2s; 
 }
 .navbar button:hover { background:#004d40; }
-
 #user-info { margin-left:20px; font-weight:bold; }
 
 /* About Members */
-.about-member { display:flex; align-items:center; gap:20px; background:#fff; padding:20px; border-radius:10px; max-width:800px; margin-top:20px; box-shadow:0 2px 6px rgba(0,0,0,0.1); }
-.about-member img { width:150px; height:150px; border-radius:50%; object-fit:cover; }
-.about-member .info { max-width:600px; }
+.about-members { max-width: 900px; margin: 20px auto; padding: 0 20px; }
+.about-member { display:flex; align-items:center; gap:20px; background:#fff; padding:20px; border-radius:12px; margin-bottom:20px; box-shadow:0 2px 8px rgba(0,0,0,0.1); }
+.about-member img { width:150px; height:150px; border-radius:50%; object-fit:cover; flex-shrink:0; }
+.about-member .info { flex:1; }
+.about-member h3 { margin-top:0; margin-bottom:5px; color:#333; }
+.about-member p { margin:5px 0; color:#555; line-height:1.4; }
 
 /* Appointments Preview */
 #appointments-preview { margin-top:30px; max-width:800px; }
@@ -37,65 +35,33 @@ h1,h2,h3 { color:#333; }
 #appointments-preview ul { list-style:none; padding:0; }
 #appointments-preview li { background:#fff; padding:10px; border:1px solid #ccc; margin-bottom:5px; border-radius:8px; }
 
-/* Buttons globally */
-button { border-radius:12px; padding:8px 15px; cursor:pointer; border:none; transition: background 0.2s; }
-button:hover { background:#004d40; }
+/* Art Tip of the Day */
+#art-tip { max-width:800px; margin:30px auto; background:#fff; padding:20px; border-radius:12px; box-shadow:0 2px 8px rgba(0,0,0,0.1); }
 
-/* Creator Panel */
-.creator-panel { background:#fff; padding:20px; border-radius:12px; max-width:800px; margin:30px auto; box-shadow:0 2px 8px rgba(0,0,0,0.1); }
-
-/* About Members Section */
-.about-members {
-  max-width: 900px;
-  margin: 20px auto;
-  padding: 0 20px;
+/* Promotion Popup Modal */
+#promotion-modal {
+    display:none; 
+    position:fixed; 
+    top:0; left:0; width:100%; height:100%; 
+    background: rgba(0,0,0,0.5); 
+    justify-content:center; align-items:center;
+    z-index:1000;
 }
-
-.about-member {
-  display: flex;
-  align-items: center;
-  gap: 20px;
-  background: #fff;
-  padding: 20px;
-  border-radius: 12px;
-  margin-bottom: 20px;
-  box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+#promotion-modal .modal-content {
+    background:#fff; padding:30px; border-radius:12px; text-align:center;
+    max-width:400px; width:90%; box-shadow:0 5px 15px rgba(0,0,0,0.3);
+    animation:fadeIn 0.3s ease-out;
 }
+#promotion-modal h2 { margin-top:0; color:#ff9800; }
+#promotion-modal button { margin-top:20px; background:#00796b; color:#fff; padding:10px 20px; border:none; border-radius:12px; cursor:pointer; transition:0.2s; }
+#promotion-modal button:hover { background:#004d40; }
 
-.about-member img {
-  width: 150px;
-  height: 150px;
-  border-radius: 50%;
-  object-fit: cover;
-  flex-shrink: 0;
-}
+@keyframes fadeIn { from {opacity:0; transform: translateY(-20px);} to {opacity:1; transform: translateY(0);} }
 
-.about-member .info {
-  flex: 1;
-}
-
-.about-member h3 {
-  margin-top: 0;
-  margin-bottom: 5px;
-  color: #333;
-}
-
-.about-member p {
-  margin: 5px 0;
-  color: #555;
-  line-height: 1.4;
-}
-
-/* Responsive for mobile */
-@media (max-width: 768px) {
-  .about-member {
-    flex-direction: column;
-    align-items: center;
-    text-align: center;
-  }
-  .about-member img {
-    margin-bottom: 15px;
-  }
+/* Responsive */
+@media (max-width:768px) {
+    .about-member { flex-direction:column; align-items:center; text-align:center; }
+    .about-member img { margin-bottom:15px; }
 }
 </style>
 </head>
@@ -103,62 +69,54 @@ button:hover { background:#004d40; }
 
 <!-- Navbar -->
 <header class="navbar">
-<h1 class="logo">Art Club</h1>
+<h1 class="logo">🎨 Art Club</h1>
 <div>
 <a href="index.html">Home</a>
 <a href="about.html">About</a>
 <a href="events.html">Events</a>
-<a href="latest-announcements.html">Announcement</a>
+<a href="latest-announcements.html">Announcements</a>
 <a href="questions.html">Questions</a>
 <a href="hall_of_fame.html">Hall of Fame</a>
 <a href="canvas.html">Collaborative Canvas</a>
 <a href="ranks.html">Art Rank</a>
 
+<a href="creator-dashboard.html" id="creator-link" style="display:none;">Creator Dashboard</a>
 
-    <!-- Creator/Admin link -->
-    <a href="creator-dashboard.html" id="creator-link" style="display:none;">Creator Dashboard</a>
-
-    <button id="logout-btn">Logout</button>
-    <span id="user-info"></span>
+<button id="logout-btn">Logout</button>
+<span id="user-info"></span>
 </div>
 </header>
 
-
-<!-- Creator Panel (JS will insert if user is creator) -->
-
+<!-- Page Content -->
 <section class="page-content">
 <h1>Welcome to the Art Club!</h1>
 <p>Explore our events, book appointments, and meet our talented members.</p>
 
 <!-- Art Tip of the Day -->
-<section id="art-tip" style="max-width:800px; margin:30px auto; background:#fff; padding:20px; border-radius:12px; box-shadow:0 2px 8px rgba(0,0,0,0.1);">
+<section id="art-tip">
   <h2>🎨 Art Tip of the Day</h2>
   <p id="tip-text">Loading tip...</p>
 </section>
 
 <!-- About Members -->
 <section class="about-members">
-  <h2>About Our Members</h2>
-
-  <!-- Kavin -->
-  <div class="about-member">
+<h2>About Our Members</h2>
+<div class="about-member">
     <img src="images/kavin.jpg" alt="Kavin Manimorin">
     <div class="info">
       <h3>Kavin Manimorin</h3>
       <p><strong>Role:</strong> Artist</p>
       <p>Kavin is a passionate artist with 10 years of experience. He is the main artist, great at sketches, and loves helping others. Volleyball enthusiast!</p>
     </div>
-  </div>
-
-  <!-- Savanth -->
-  <div class="about-member">
+</div>
+<div class="about-member">
     <img src="images/savanth.jpg" alt="Savanth Maddineni">
     <div class="info">
       <h3>Savanth Maddineni</h3>
       <p><strong>Role:</strong> Website Maker</p>
       <p>Savanth created this website, helps Kavin with ideas, and is always kind-hearted. Volleyball lover too!</p>
     </div>
-  </div>
+</div>
 </section>
 
 <!-- Upcoming Appointments Preview -->
@@ -167,106 +125,48 @@ button:hover { background:#004d40; }
     <ul id="appointments-list"></ul>
 </div>
 
+<!-- Promotion Modal Template -->
+<div id="promotion-modal">
+  <div class="modal-content">
+    <h2>🎉 Congratulations!</h2>
+    <p id="promotion-message">Your art rank has been promoted!</p>
+    <button id="close-promo">Close</button>
+  </div>
+</div>
+
 <script>
-// ------------------ AUTO LOGIN FLOW ------------------
+// ------------------ LOGIN CHECK ------------------
 const currentUser = JSON.parse(localStorage.getItem("currentUser"));
-if(!currentUser){
-    window.location.href = "login.html"; // or signup.html
-}
-
-// Display username and rank in navbar
+if(!currentUser) window.location.href = "login.html";
 document.getElementById("user-info").innerText = `${currentUser.username} (${currentUser.rank})`;
-
-// Logout button
 document.getElementById("logout-btn").addEventListener("click", () => {
     localStorage.removeItem("currentUser");
     window.location.href = "login.html";
 });
 
-// ------------------ CREATOR PANEL ------------------
-if(currentUser.rank === "creator") {
-    const section = document.createElement("section");
-    section.className = "creator-panel";
-    section.innerHTML = `
-        <h2>👑 Creator Panel</h2>
-        <p>Manage users: assign ranks and change passwords.</p>
-        <div style="margin-bottom:10px;">
-            <label>Username:</label>
-            <input type="text" id="assign-username" placeholder="Username">
-            <label>Rank:</label>
-            <select id="assign-rank">
-                <option value="member">Member</option>
-                <option value="creator">Creator</option>
-            </select>
-            <button id="assign-btn">Assign Rank</button>
-        </div>
-        <div>
-            <label>Username:</label>
-            <input type="text" id="pass-username" placeholder="Username">
-            <label>New Password:</label>
-            <input type="password" id="assign-password" placeholder="Password">
-            <button id="pass-btn">Change Password</button>
-        </div>
-    `;
-    document.body.insertBefore(section, document.querySelector(".page-content"));
-
-    // Assign rank
-    document.getElementById("assign-btn").addEventListener("click", () => {
-        const uname = document.getElementById("assign-username").value.trim();
-        const newRank = document.getElementById("assign-rank").value;
-        let users = JSON.parse(localStorage.getItem("users") || "[]");
-        const user = users.find(u => u.username === uname);
-        if(user){
-            user.rank = newRank;
-            localStorage.setItem("users", JSON.stringify(users));
-            alert(`Assigned rank "${newRank}" to ${uname}`);
-        } else {
-            alert("User not found!");
-        }
-    });
-
-    // Change password
-    document.getElementById("pass-btn").addEventListener("click", () => {
-        const uname = document.getElementById("pass-username").value.trim();
-        const newPass = document.getElementById("assign-password").value.trim();
-        let users = JSON.parse(localStorage.getItem("users") || "[]");
-        const user = users.find(u => u.username === uname);
-        if(user){
-            user.password = newPass;
-            localStorage.setItem("users", JSON.stringify(users));
-            alert(`Password updated for ${uname}`);
-        } else {
-            alert("User not found!");
-        }
-    });
+// ------------------ PROMOTION MODAL LOGIC ------------------
+function showPromotion(rank){
+    const modal = document.getElementById("promotion-modal");
+    document.getElementById("promotion-message").innerText = `Your art rank has been promoted to: ${rank}!`;
+    modal.style.display = "flex";
 }
+document.getElementById("close-promo").addEventListener("click", ()=>{
+    document.getElementById("promotion-modal").style.display="none";
+});
 
-// ------------------ APPOINTMENTS PREVIEW ------------------
-function formatDate(date){
-    return date.toLocaleDateString(undefined, { weekday:'long', month:'short', day:'numeric', year:'numeric' });
+// Example: check if user was promoted
+const users = JSON.parse(localStorage.getItem("users") || "[]");
+const realUser = users.find(u => u.username === currentUser.username);
+const lastRank = localStorage.getItem(currentUser.username + "_lastRank");
+if(lastRank && lastRank !== realUser.rank){
+    showPromotion(realUser.rank); // show modal only if promoted
 }
+localStorage.setItem(currentUser.username + "_lastRank", realUser.rank);
 
-const appointmentsList = document.getElementById("appointments-list");
-const saved = JSON.parse(localStorage.getItem("appointments") || "[]");
-const userAppointments = saved.filter(app => app.username === currentUser.username);
-
-if(userAppointments.length === 0){
-    const li = document.createElement("li");
-    li.textContent = "No upcoming appointments yet.";
-    appointmentsList.appendChild(li);
-} else {
-    userAppointments.forEach(app => {
-        const date = new Date(app.date);
-        const li = document.createElement("li");
-        li.textContent = `${formatDate(date)}: ${app.name} — ${app.reason}`;
-        appointmentsList.appendChild(li);
-    });
-}
-
-// ------------------ ART TIP OF THE DAY ------------------
+// ------------------ ART TIP ------------------
 const dailyTips = [
     "Experiment with a new medium this week.",
-    "Take a 10-minute sketch break daily to improve your hand-eye coordination.",
+    "Take a 10-minute sketch break daily.",
     "Try mixing colors you’ve never combined before.",
     "Use references from real life instead of only photos.",
     "Practice shading with different pencil pressures.",
@@ -274,19 +174,37 @@ const dailyTips = [
     "Study the works of a famous artist and recreate one piece.",
     "Try creating art using only one color to explore tone and contrast."
 ];
-
 const tipTextElement = document.getElementById("tip-text");
 const today = new Date().toISOString().split('T')[0];
 let storedTip = JSON.parse(localStorage.getItem("dailyArtTip"));
 if(storedTip && storedTip.date === today){
     tipTextElement.textContent = storedTip.tip;
 } else {
-    const randomTip = dailyTips[Math.floor(Math.random() * dailyTips.length)];
+    const randomTip = dailyTips[Math.floor(Math.random()*dailyTips.length)];
     tipTextElement.textContent = randomTip;
-    localStorage.setItem("dailyArtTip", JSON.stringify({ date: today, tip: randomTip }));
+    localStorage.setItem("dailyArtTip", JSON.stringify({date:today, tip:randomTip}));
+}
+
+// ------------------ APPOINTMENTS PREVIEW ------------------
+function formatDate(date){
+    return date.toLocaleDateString(undefined, { weekday:'long', month:'short', day:'numeric', year:'numeric' });
+}
+const appointmentsList = document.getElementById("appointments-list");
+const saved = JSON.parse(localStorage.getItem("appointments") || "[]");
+const userAppointments = saved.filter(app => app.username === currentUser.username);
+if(userAppointments.length === 0){
+    const li = document.createElement("li");
+    li.textContent = "No upcoming appointments yet.";
+    appointmentsList.appendChild(li);
+} else {
+    userAppointments.forEach(app=>{
+        const date = new Date(app.date);
+        const li = document.createElement("li");
+        li.textContent = `${formatDate(date)}: ${app.name} — ${app.reason}`;
+        appointmentsList.appendChild(li);
+    });
 }
 </script>
 
 </body>
 </html>
-
