@@ -34,21 +34,25 @@ a {
     padding: 15px 5%;
     background: var(--navbar-bg);
     border-bottom: 2px solid var(--main-color);
+    flex-wrap: wrap;
 }
 
 .navbar .logo {
     font-size: 1.8rem;
     font-weight: bold;
+    color: white;
 }
 
 .nav-links {
     list-style: none;
     display: flex;
     gap: 20px;
+    flex-wrap: wrap;
 }
 
 .nav-links li a {
     font-size: 1rem;
+    color: white;
     transition: color 0.3s ease;
 }
 
