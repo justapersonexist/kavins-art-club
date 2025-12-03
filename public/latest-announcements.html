@@ -5,117 +5,46 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Art Club | Latest Announcements</title>
 <style>
-    body {
-        font-family: Arial, sans-serif;
-        margin:0;
-        padding:0;
-        background:#ff0000;
-    }
-    header, section {
-        padding:20px;
-    }
-    h1,h2,h3 {
-        color:#333;
-    }
+body { font-family: Arial, sans-serif; margin:0; padding:0; background:#ff0000; }
+header, section { padding:20px; }
+h1,h2,h3 { color:#333; }
 
-    /* Navbar */
-    .navbar {
-        background:#f8f8f8;
-        color:#4800ff;
-        display:flex;
-        justify-content:space-between;
-        padding:10px 20px;
-        align-items:center;
-        flex-wrap: wrap;
-    }
-    .navbar a {
-        color:#000000;
-        text-decoration:none;
-        margin-left:20px;
-        margin-top:5px;
-    }
-    .navbar button {
-        padding:8px 15px;
-        cursor:pointer;
-        background:#00796b;
-        color:white;
-        border:none;
-        border-radius:12px;
-        transition: background 0.2s;
-        margin-top:5px;
-    }
-    .navbar button:hover { background:#004d40; }
+/* Navbar */
+.navbar { background:#f8f8f8; color:#4800ff; display:flex; justify-content:space-between; padding:10px 20px; align-items:center; flex-wrap: wrap; }
+.navbar a { color:#000000; text-decoration:none; margin-left:20px; margin-top:5px; }
+.navbar button { padding:8px 15px; cursor:pointer; background:#00796b; color:white; border:none; border-radius:12px; transition: background 0.2s; margin-top:5px; }
+.navbar button:hover { background:#004d40; }
 
-    /* Calendars */
-    #calendar, #all-days-calendar {
-        display:grid;
-        grid-template-columns:repeat(auto-fit,minmax(150px,1fr));
-        gap:10px;
-        margin:20px 0;
-    }
-    .day-box {
-        background:#e30000;
-        border:1px solid #000000;
-        padding:15px;
-        text-align:center;
-        cursor:pointer;
-        border-radius:12px;
-        transition:0.2s;
-    }
-    .day-box:hover { background:#00e1ff; }
+/* Calendar */
+#calendar { display:grid; grid-template-columns:repeat(auto-fit,minmax(150px,1fr)); gap:10px; margin:20px 0; }
+.day-box { background:#e30000; border:1px solid #000000; padding:15px; text-align:center; cursor:pointer; border-radius:12px; transition:0.2s; }
+.day-box:hover { background:#00e1ff; }
 
-    .day-box-all {
-        background:#ffd27f;
-        border:1px solid #000000;
-        padding:10px;
-        border-radius:10px;
-        text-align:center;
-        cursor:pointer;
-        transition:0.2s;
-    }
-    .day-box-all:hover { background:#ffb74d; }
+/* All Days Announcement Form */
+#all-days-form { background:#ffeb3b; padding:15px; border-radius:12px; border:1px solid #000000; max-width:500px; margin-bottom:20px; }
+#all-days-form.hidden { display:none; }
+#all-days-form label { display:block; margin-top:10px; }
+#all-days-form input, #all-days-form textarea { width:100%; padding:5px; margin-top:5px; }
 
-    /* Announcement Form */
-    #announcement-form {
-        background:#00ff22;
-        padding:15px;
-        border-radius:12px;
-        border:1px solid #000000;
-        max-width:500px;
-        margin-bottom:20px;
-    }
-    #announcement-form.hidden { display:none; }
-    #announcement-form label { display:block; margin-top:10px; }
-    #announcement-form input, #announcement-form textarea {
-        width:100%;
-        padding:5px;
-        margin-top:5px;
-    }
+/* Announcement Form (Tuesdays) */
+#announcement-form { background:#00ff22; padding:15px; border-radius:12px; border:1px solid #000000; max-width:500px; margin-bottom:20px; }
+#announcement-form.hidden { display:none; }
+#announcement-form label { display:block; margin-top:10px; }
+#announcement-form input, #announcement-form textarea { width:100%; padding:5px; margin-top:5px; }
 
-    /* Announcement List */
-    #announcement-list {
-        list-style:none;
-        padding:0;
-    }
-    .announcement-item {
-        background:#ca0000;
-        padding:15px;
-        border:1px solid #ccc;
-        margin-bottom:10px;
-        border-radius:8px;
-    }
-    .announcement-item:hover { background:#0097ab; }
-    .announcement-title { font-weight:bold; font-size:1.1rem; }
-    .announcement-date { font-style:italic; color:#555; margin-bottom:5px; }
-    .comments-section { margin-top:10px; border-top:1px solid #000000; padding-top:10px; }
-    .comment { margin-bottom:5px; padding:5px; background:#ff0000; border-radius:6px; }
-    .comment input { width:80%; padding:5px; }
-    .comment button { padding:5px 8px; margin-left:5px; }
+/* Announcement List */
+#announcement-list { list-style:none; padding:0; }
+.announcement-item { background:#ca0000; padding:15px; border:1px solid #ccc; margin-bottom:10px; border-radius:8px; }
+.announcement-item:hover { background:#0097ab; }
+.announcement-title { font-weight:bold; font-size:1.1rem; }
+.announcement-date { font-style:italic; color:#555; margin-bottom:5px; }
+.comments-section { margin-top:10px; border-top:1px solid #000000; padding-top:10px; }
+.comment { margin-bottom:5px; padding:5px; background:#ff0000; border-radius:6px; }
+.comment input { width:80%; padding:5px; }
+.comment button { padding:5px 8px; margin-left:5px; }
 </style>
 </head>
-
 <body>
-    
 <header class="navbar">
 <h1 class="logo">Art Club</h1>
 <div>
@@ -134,15 +63,21 @@
 <section class="page-content">
 <h2>Latest Announcements</h2>
 
-<!-- All Days Calendar -->
-<h3>All Days</h3>
-<div id="all-days-calendar"></div>
+<!-- All Days Announcement Form (creator only) -->
+<div id="all-days-form" class="hidden">
+<h3>All Days Announcement</h3>
+<label for="all-title">Title:</label>
+<input type="text" id="all-title">
+<label for="all-content">Content:</label>
+<textarea id="all-content" rows="3"></textarea>
+<button id="all-save-btn">Post All Day Announcement</button>
+</div>
 
 <!-- Tuesdays Calendar -->
-<h3>Tuesdays</h3>
+<h3>Tuesdays Calendar</h3>
 <div id="calendar"></div>
 
-<!-- Announcement Form (CREATOR ONLY) -->
+<!-- Tuesday-Specific Announcement Form -->
 <div id="announcement-form" class="hidden">
 <h3 id="selected-date"></h3>
 <label for="title">Announcement Title:</label>
@@ -154,198 +89,180 @@
 
 <!-- Announcement List -->
 <ul id="announcement-list"></ul>
-
 </section>
 
 <script>
-    // --------------------- LOGIN CHECK ------------------------
-    const currentUser = JSON.parse(localStorage.getItem("currentUser"));
-    if(!currentUser) window.location.href = "signup.html";
+const currentUser = JSON.parse(localStorage.getItem("currentUser"));
+if(!currentUser) window.location.href = "signup.html";
 
-    const CREATOR_USERNAME = "justapersonexist";
+const CREATOR_USERNAME = "justapersonexist";
 
-    document.getElementById("logout-btn").addEventListener("click", () => {
-        localStorage.removeItem("currentUser");
-        window.location.href = "login.html";
-    });
+document.getElementById("logout-btn").addEventListener("click", () => {
+    localStorage.removeItem("currentUser");
+    window.location.href = "login.html";
+});
 
-    // --------------------- SELECTORS ------------------------
-    const calendar = document.getElementById("calendar");
-    const allDaysCalendar = document.getElementById("all-days-calendar");
-    const form = document.getElementById("announcement-form");
-    const selectedDateDisplay = document.getElementById("selected-date");
-    const list = document.getElementById("announcement-list");
-    const saveBtn = document.getElementById("save-btn");
+const calendar = document.getElementById("calendar");
+const form = document.getElementById("announcement-form");
+const allDaysForm = document.getElementById("all-days-form");
+const selectedDateDisplay = document.getElementById("selected-date");
+const list = document.getElementById("announcement-list");
+const saveBtn = document.getElementById("save-btn");
+const allSaveBtn = document.getElementById("all-save-btn");
 
-    let selectedDate = null;
+let selectedDate = null;
 
-    function formatDate(date){
-        return new Date(date).toLocaleDateString(undefined, { weekday:'long', month:'short', day:'numeric', year:'numeric' });
-    }
+// Show All Days form only to creator
+if(currentUser.username === CREATOR_USERNAME){
+    allDaysForm.classList.remove("hidden");
+}
 
-    // --------------------- GENERATE ALL DAYS ------------------------
-    function generateAllDays(monthsAhead = 6) {
-        allDaysCalendar.innerHTML = "";
+function formatDate(date){
+    return new Date(date).toLocaleDateString(undefined, { weekday:'long', month:'short', day:'numeric', year:'numeric' });
+}
 
-        const today = new Date();
-        const end = new Date(today);
-        end.setMonth(today.getMonth() + monthsAhead);
+// --------------------- GENERATE TUESDAYS ------------------------
+function generateTuesdays(monthsAhead = 6) {
+    calendar.innerHTML = "";
+    const today = new Date();
+    const end = new Date(today);
+    end.setMonth(today.getMonth() + monthsAhead);
 
-        let d = new Date(today);
+    let d = new Date(today);
+    while(d.getDay() !== 2) d.setDate(d.getDate() + 1); // 2 = Tuesday
 
-        while (d <= end) {
-            const dateCopy = new Date(d);
-            const div = document.createElement("div");
-            div.classList.add("day-box-all");
-            div.textContent = formatDate(dateCopy);
+    while(d <= end){
+        const dateCopy = new Date(d);
+        const div = document.createElement("div");
+        div.classList.add("day-box");
+        div.textContent = formatDate(dateCopy);
 
-            div.addEventListener("click", () => {
-                selectedDate = dateCopy.toISOString().split("T")[0];
-                selectedDateDisplay.textContent = "Selected Date: " + formatDate(dateCopy);
+        div.addEventListener("click", ()=> {
+            selectedDate = dateCopy.toISOString().split("T")[0];
+            selectedDateDisplay.textContent = "Selected Date: " + formatDate(dateCopy);
 
-                if (currentUser.username === CREATOR_USERNAME) {
-                    form.classList.remove("hidden");
-                } else {
-                    alert("Only the creator can post announcements.");
-                }
-            });
-
-            allDaysCalendar.appendChild(div);
-            d.setDate(d.getDate() + 1);
-        }
-    }
-
-    // --------------------- GENERATE TUESDAYS ------------------------
-    function generateTuesdays(monthsAhead = 6) {
-        calendar.innerHTML = "";
-        const today = new Date();
-        const end = new Date(today);
-        end.setMonth(today.getMonth() + monthsAhead);
-
-        let d = new Date(today);
-
-        while(d.getDay() !== 2) d.setDate(d.getDate() + 1); // 2 = Tuesday
-
-        while(d <= end){
-            const dateCopy = new Date(d);
-            const div = document.createElement("div");
-            div.classList.add("day-box");
-            div.textContent = formatDate(dateCopy);
-
-            div.addEventListener("click", ()=> {
-                selectedDate = dateCopy.toISOString().split("T")[0];
-                selectedDateDisplay.textContent = "Selected Date: " + formatDate(dateCopy);
-
-                if(currentUser.username === CREATOR_USERNAME){
-                    form.classList.remove("hidden");
-                } else {
-                    alert("Only the creator can post announcements.");
-                }
-            });
-
-            calendar.appendChild(div);
-            d.setDate(d.getDate() + 7);
-        }
-    }
-
-    // --------------------- LOAD ANNOUNCEMENTS ------------------------
-    function loadAnnouncements(){
-        list.innerHTML = "";
-        const saved = JSON.parse(localStorage.getItem("announcements") || "[]");
-
-        if(saved.length === 0){
-            const li = document.createElement("li");
-            li.textContent = "No announcements yet.";
-            list.appendChild(li);
-            return;
-        }
-
-        saved.sort((a,b)=> new Date(b.date) - new Date(a.date));
-
-        saved.forEach((a,index)=>{
-            const li = document.createElement("li");
-            li.classList.add("announcement-item");
-            li.innerHTML = `
-                <div class="announcement-title">${a.title}</div>
-                <div class="announcement-date">(${formatDate(a.date)})</div>
-                <div class="announcement-content">${a.content}</div>
-                <div class="comments-section" id="comments-${index}">
-                    <strong>Comments:</strong><br>
-                </div>
-            `;
-            // Add comment input for users
-            const commentDiv = document.createElement("div");
-            commentDiv.classList.add("comment");
-            commentDiv.innerHTML = `<input type="text" placeholder="Add a comment" id="input-${index}">
-                                    <button onclick="addComment(${index})">Post</button>`;
-            li.querySelector(".comments-section").appendChild(commentDiv);
-
-            // Load existing comments
-            if(a.comments){
-                a.comments.forEach(c=>{
-                    const cDiv = document.createElement("div");
-                    cDiv.classList.add("comment");
-                    cDiv.textContent = c;
-                    li.querySelector(".comments-section").appendChild(cDiv);
-                });
+            if(currentUser.username === CREATOR_USERNAME){
+                form.classList.remove("hidden");
+            } else {
+                alert("Only the creator can post announcements.");
             }
-
-            list.appendChild(li);
         });
+
+        calendar.appendChild(div);
+        d.setDate(d.getDate() + 7);
+    }
+}
+
+// --------------------- LOAD ANNOUNCEMENTS ------------------------
+function loadAnnouncements(){
+    list.innerHTML = "";
+    const saved = JSON.parse(localStorage.getItem("announcements") || "[]");
+
+    if(saved.length === 0){
+        const li = document.createElement("li");
+        li.textContent = "No announcements yet.";
+        list.appendChild(li);
+        return;
     }
 
-    // --------------------- SAVE ANNOUNCEMENT ------------------------
-    saveBtn.addEventListener("click", ()=> {
-        if(currentUser.username !== CREATOR_USERNAME){
-            alert("Only the creator can post announcements.");
-            return;
+    saved.sort((a,b)=> new Date(b.date || 0) - new Date(a.date || 0)); // All Days announcements first
+
+    saved.forEach((a,index)=>{
+        const li = document.createElement("li");
+        li.classList.add("announcement-item");
+        li.innerHTML = `
+            <div class="announcement-title">${a.title}</div>
+            <div class="announcement-date">${a.date ? "(" + formatDate(a.date) + ")" : "(All Days)"}</div>
+            <div class="announcement-content">${a.content}</div>
+            <div class="comments-section" id="comments-${index}">
+                <strong>Comments:</strong><br>
+            </div>
+        `;
+        const commentDiv = document.createElement("div");
+        commentDiv.classList.add("comment");
+        commentDiv.innerHTML = `<input type="text" placeholder="Add a comment" id="input-${index}">
+                                <button onclick="addComment(${index})">Post</button>`;
+        li.querySelector(".comments-section").appendChild(commentDiv);
+
+        if(a.comments){
+            a.comments.forEach(c=>{
+                const cDiv = document.createElement("div");
+                cDiv.classList.add("comment");
+                cDiv.textContent = c;
+                li.querySelector(".comments-section").appendChild(cDiv);
+            });
         }
 
-        const title = document.getElementById("title").value.trim();
-        const content = document.getElementById("content").value.trim();
-
-        if(!selectedDate || !title || !content){
-            alert("Please fill in all fields.");
-            return;
-        }
-
-        const saved = JSON.parse(localStorage.getItem("announcements") || "[]");
-        saved.push({
-            date: selectedDate,
-            title,
-            content,
-            comments:[]
-        });
-
-        localStorage.setItem("announcements", JSON.stringify(saved));
-
-        alert("Announcement posted!");
-        form.classList.add("hidden");
-        document.getElementById("title").value = "";
-        document.getElementById("content").value = "";
-        selectedDate = null;
-
-        loadAnnouncements();
+        list.appendChild(li);
     });
+}
 
-    // --------------------- ADD COMMENT ------------------------
-    function addComment(index){
-        const input = document.getElementById(`input-${index}`);
-        const text = input.value.trim();
-        if(!text) return;
-
-        const saved = JSON.parse(localStorage.getItem("announcements") || "[]");
-        saved[index].comments.push(`${currentUser.username}: ${text}`);
-        localStorage.setItem("announcements", JSON.stringify(saved));
-
-        input.value = "";
-        loadAnnouncements();
+// --------------------- POST TUESDAY ANNOUNCEMENT ------------------------
+saveBtn.addEventListener("click", ()=>{
+    if(currentUser.username !== CREATOR_USERNAME){
+        alert("Only the creator can post announcements.");
+        return;
     }
 
-    // --------------------- INIT ------------------------
-    generateAllDays();
-    generateTuesdays();
+    const title = document.getElementById("title").value.trim();
+    const content = document.getElementById("content").value.trim();
+
+    if(!selectedDate || !title || !content){
+        alert("Please fill in all fields.");
+        return;
+    }
+
+    const saved = JSON.parse(localStorage.getItem("announcements") || "[]");
+    saved.push({ date: selectedDate, title, content, comments:[] });
+    localStorage.setItem("announcements", JSON.stringify(saved));
+
+    alert("Announcement posted!");
+    form.classList.add("hidden");
+    document.getElementById("title").value = "";
+    document.getElementById("content").value = "";
+    selectedDate = null;
+
     loadAnnouncements();
+});
+
+// --------------------- POST ALL DAYS ANNOUNCEMENT ------------------------
+allSaveBtn.addEventListener("click", ()=>{
+    const title = document.getElementById("all-title").value.trim();
+    const content = document.getElementById("all-content").value.trim();
+
+    if(!title || !content){
+        alert("Please fill in all fields.");
+        return;
+    }
+
+    const saved = JSON.parse(localStorage.getItem("announcements") || "[]");
+    saved.push({ date: null, title, content, comments:[] }); // date null = All Days
+    localStorage.setItem("announcements", JSON.stringify(saved));
+
+    alert("All Days Announcement posted!");
+    document.getElementById("all-title").value = "";
+    document.getElementById("all-content").value = "";
+
+    loadAnnouncements();
+});
+
+// --------------------- ADD COMMENT ------------------------
+function addComment(index){
+    const input = document.getElementById(`input-${index}`);
+    const text = input.value.trim();
+    if(!text) return;
+
+    const saved = JSON.parse(localStorage.getItem("announcements") || "[]");
+    saved[index].comments.push(`${currentUser.username}: ${text}`);
+    localStorage.setItem("announcements", JSON.stringify(saved));
+
+    input.value = "";
+    loadAnnouncements();
+}
+
+// --------------------- INIT ------------------------
+generateTuesdays();
+loadAnnouncements();
 </script>
 </body>
 </html>
