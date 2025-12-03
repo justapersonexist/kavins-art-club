@@ -5,6 +5,47 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Art Club | Art Ranks</title>
 <link rel="stylesheet" href="style.css">
+<style>
+  table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-top: 20px;
+  }
+
+  th, td {
+    padding: 12px;
+    text-align: left;
+    border-bottom: 1px solid #ccc;
+  }
+
+  button {
+    padding: 6px 12px;
+    border: none;
+    border-radius: 6px;
+    cursor: pointer;
+    background: #00796b;
+    color: white;
+    transition: 0.2s;
+  }
+
+  button:hover {
+    background: #004d40;
+  }
+
+  .rank-badge {
+    padding: 4px 8px;
+    border-radius: 12px;
+    color: white;
+    font-weight: bold;
+  }
+
+  .User { background-color: gray; }
+  .Beginner { background-color: blue; }
+  .Intermediate { background-color: green; }
+  .Advanced { background-color: purple; }
+  .Master { background-color: gold; color: black; }
+  .creator { background-color: red; }
+</style>
 </head>
 <body>
 
@@ -24,9 +65,9 @@
 
 <section class="page-content">
   <h2>Art Skill Ranks</h2>
-  <p>All users start as <strong>Beginner</strong>. Creators can promote users based on their art skills.</p>
+  <p>All new users start as <strong>User</strong>. Creators can promote users to higher art skill ranks.</p>
 
-  <table id="rank-table" border="1" cellpadding="8" cellspacing="0">
+  <table id="rank-table">
     <thead>
       <tr>
         <th>Username</th>
@@ -34,50 +75,61 @@
         <th>Action (Creator Only)</th>
       </tr>
     </thead>
-    <tbody>
-      <!-- Users will populate here -->
-    </tbody>
+    <tbody></tbody>
   </table>
 </section>
 
 <script>
+// Get current user
 const currentUser = JSON.parse(localStorage.getItem("currentUser"));
 if(!currentUser) window.location.href = "signup.html";
 
+// Get all users
 const users = JSON.parse(localStorage.getItem("users") || "[]");
 
-// Ensure every user has a rank (default Beginner)
+// Ensure every user has a rank
 users.forEach(u => {
-    if(!u.rank) u.rank = "Beginner";
+    if(!u.rank) u.rank = "User"; // default starting rank
 });
 localStorage.setItem("users", JSON.stringify(users));
 
 const rankTableBody = document.querySelector("#rank-table tbody");
 
+// Render users in the table
 function renderUsers() {
     rankTableBody.innerHTML = "";
 
     users.forEach((user, index) => {
         const tr = document.createElement("tr");
 
+        // Add colored badge for the rank
+        const rankBadge = `<span class="rank-badge ${user.rank}">${user.rank}</span>`;
+
         tr.innerHTML = `
             <td>${user.username}</td>
-            <td>${user.rank}</td>
+            <td>${rankBadge}</td>
             <td>
-                ${currentUser.rank === "creator" && user.rank !== "creator" ? `<button onclick="promoteUser(${index})">Promote</button>` : ""}
+                ${
+                    currentUser.rank === "creator" && user.rank !== "creator" 
+                    ? `<button onclick="promoteUser(${index})">Promote</button>` 
+                    : ""
+                }
             </td>
         `;
         rankTableBody.appendChild(tr);
     });
 }
 
-// Promotion logic: Beginner → Intermediate → Advanced → Master
+// Promote user through ranks
 function promoteUser(index) {
     if(currentUser.rank !== "creator") return;
 
     const user = users[index];
 
     switch(user.rank) {
+        case "User":
+            user.rank = "Beginner";
+            break;
         case "Beginner":
             user.rank = "Intermediate";
             break;
@@ -96,6 +148,7 @@ function promoteUser(index) {
     renderUsers();
 }
 
+// Initial render
 renderUsers();
 </script>
 
