@@ -4,6 +4,7 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Art Club | Sign Up</title>
+
 <style>
 body { font-family: Arial, sans-serif; background:#f4f4f4; margin:0; padding:0; }
 .navbar { background:#333; color:#fff; display:flex; justify-content:space-between; padding:10px 20px; align-items:center; }
@@ -14,6 +15,7 @@ button { padding:8px 15px; cursor:pointer; background:#00796b; color:white; bord
 button:hover { background:#004d40; }
 </style>
 </head>
+
 <body>
 
 <header class="navbar">
@@ -26,41 +28,51 @@ button:hover { background:#004d40; }
 
 <section>
 <h2>Sign Up</h2>
+
 <label>Username:</label>
 <input type="text" id="signup-username" placeholder="Enter username">
+
 <label>Password:</label>
 <input type="password" id="signup-password" placeholder="Enter password">
+
+<label>Age of your child:</label>
+<input type="number" id="signup-age" placeholder="Enter age">
+
 <button id="signup-btn">Sign Up</button>
+
 <p>Already have an account? <a href="login.html">Login here</a></p>
 </section>
 
 <script>
-// Load existing users or create empty array
+// Load existing users or make empty list
 let users = JSON.parse(localStorage.getItem("users") || "[]");
 
-// Hardcoded default creator account (only added if missing)
+// Add default admin only if missing
 if (!users.find(u => u.username === "admin")) {
     users.push({ username: "admin", password: "password123", rank: "creator" });
     localStorage.setItem("users", JSON.stringify(users));
 }
 
+// Signup button
 document.getElementById("signup-btn").addEventListener("click", () => {
     const username = document.getElementById("signup-username").value.trim();
     const password = document.getElementById("signup-password").value.trim();
+    const age = document.getElementById("signup-age").value.trim();
 
-    if (!username || !password) {
+    if (!username || !password || !age) {
         alert("Please fill in all fields.");
         return;
     }
 
-    if(users.find(u => u.username === username)){
+    if (users.find(u => u.username === username)) {
         alert("Username already exists!");
         return;
     }
 
-    const newUser = { username, password, rank: "user" }; // default rank = user
+    const newUser = { username, password, age, rank: "user" };
     users.push(newUser);
     localStorage.setItem("users", JSON.stringify(users));
+
     alert("Sign-up successful! You can now log in.");
     window.location.href = "login.html";
 });
