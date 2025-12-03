@@ -47,13 +47,18 @@ button:hover { background:#004d40; }
 // Load stored users
 let users = JSON.parse(localStorage.getItem("users") || "[]");
 
-// Default admin account
+// Create default creator account only once
 if (!users.find(u => u.username === "King bob")) {
-    users.push({ username: "King bob", password: "zimsin-qeCny9-dovqem", rank: "creator" });
+    users.push({ 
+        username: "King bob", 
+        password: "zimsin-qeCny9-dovqem", 
+        rank: "creator",
+        age: null
+    });
     localStorage.setItem("users", JSON.stringify(users));
 }
 
-// Signup button logic
+// SIGNUP LOGIC
 document.getElementById("signup-btn").addEventListener("click", () => {
     const username = document.getElementById("signup-username").value.trim();
     const password = document.getElementById("signup-password").value.trim();
@@ -64,18 +69,26 @@ document.getElementById("signup-btn").addEventListener("click", () => {
         return;
     }
 
-    // AGE LIMIT CHECK: 7 to 14 years old
+    // AGE LIMIT CHECK
     if (age < 7 || age > 14) {
         alert("Only children ages 7 to 14 can sign up.");
         return;
     }
 
+    // CHECK FOR DUPLICATE USER
     if (users.find(u => u.username === username)) {
         alert("Username already exists!");
         return;
     }
 
-    const newUser = { username, password, age, rank: "user" };
+    // Create new user - default rank Beginner
+    const newUser = { 
+        username, 
+        password, 
+        age, 
+        rank: "Beginner" 
+    };
+
     users.push(newUser);
     localStorage.setItem("users", JSON.stringify(users));
 
