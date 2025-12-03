@@ -18,7 +18,6 @@
         color:#333;
     }
 
-    
     /* Navbar */
     .navbar {
         background:#f8f8f8;
@@ -47,8 +46,8 @@
     }
     .navbar button:hover { background:#004d40; }
 
-    /* Calendar */
-    #calendar {
+    /* Calendars */
+    #calendar, #all-days-calendar {
         display:grid;
         grid-template-columns:repeat(auto-fit,minmax(150px,1fr));
         gap:10px;
@@ -64,6 +63,17 @@
         transition:0.2s;
     }
     .day-box:hover { background:#00e1ff; }
+
+    .day-box-all {
+        background:#ffd27f;
+        border:1px solid #000000;
+        padding:10px;
+        border-radius:10px;
+        text-align:center;
+        cursor:pointer;
+        transition:0.2s;
+    }
+    .day-box-all:hover { background:#ffb74d; }
 
     /* Announcement Form */
     #announcement-form {
@@ -109,10 +119,6 @@
 <header class="navbar">
 <h1 class="logo">Art Club</h1>
 <div>
-<!-- Navbar -->
-<header class="navbar">
-<h1 class="logo">Art Club</h1>
-<div>
 <a href="index.html">Home</a>
 <a href="about.html">About</a>
 <a href="events.html">Events</a>
@@ -121,15 +127,19 @@
 <a href="hall_of_fame.html">Hall of Fame</a>
 <a href="canvas.html">Collaborative Canvas</a>
 <a href="report.html">Report</a>
-    <button id="logout-btn">Logout</button>
+<button id="logout-btn">Logout</button>
 </div>
 </header>
-
 
 <section class="page-content">
 <h2>Latest Announcements</h2>
 
-<!-- Calendar -->
+<!-- All Days Calendar -->
+<h3>All Days</h3>
+<div id="all-days-calendar"></div>
+
+<!-- Tuesdays Calendar -->
+<h3>Tuesdays</h3>
 <div id="calendar"></div>
 
 <!-- Announcement Form (CREATOR ONLY) -->
@@ -161,6 +171,7 @@
 
     // --------------------- SELECTORS ------------------------
     const calendar = document.getElementById("calendar");
+    const allDaysCalendar = document.getElementById("all-days-calendar");
     const form = document.getElementById("announcement-form");
     const selectedDateDisplay = document.getElementById("selected-date");
     const list = document.getElementById("announcement-list");
@@ -172,15 +183,48 @@
         return new Date(date).toLocaleDateString(undefined, { weekday:'long', month:'short', day:'numeric', year:'numeric' });
     }
 
-    // --------------------- GENERATE THURSDAYS ------------------------
-    function generateThursdays(monthsAhead=6){
+    // --------------------- GENERATE ALL DAYS ------------------------
+    function generateAllDays(monthsAhead = 6) {
+        allDaysCalendar.innerHTML = "";
+
+        const today = new Date();
+        const end = new Date(today);
+        end.setMonth(today.getMonth() + monthsAhead);
+
+        let d = new Date(today);
+
+        while (d <= end) {
+            const dateCopy = new Date(d);
+            const div = document.createElement("div");
+            div.classList.add("day-box-all");
+            div.textContent = formatDate(dateCopy);
+
+            div.addEventListener("click", () => {
+                selectedDate = dateCopy.toISOString().split("T")[0];
+                selectedDateDisplay.textContent = "Selected Date: " + formatDate(dateCopy);
+
+                if (currentUser.username === CREATOR_USERNAME) {
+                    form.classList.remove("hidden");
+                } else {
+                    alert("Only the creator can post announcements.");
+                }
+            });
+
+            allDaysCalendar.appendChild(div);
+            d.setDate(d.getDate() + 1);
+        }
+    }
+
+    // --------------------- GENERATE TUESDAYS ------------------------
+    function generateTuesdays(monthsAhead = 6) {
         calendar.innerHTML = "";
         const today = new Date();
         const end = new Date(today);
         end.setMonth(today.getMonth() + monthsAhead);
 
         let d = new Date(today);
-        while(d.getDay() !== 4) d.setDate(d.getDate() + 1);
+
+        while(d.getDay() !== 2) d.setDate(d.getDate() + 1); // 2 = Tuesday
 
         while(d <= end){
             const dateCopy = new Date(d);
@@ -188,7 +232,7 @@
             div.classList.add("day-box");
             div.textContent = formatDate(dateCopy);
 
-            div.addEventListener("click", ()=>{
+            div.addEventListener("click", ()=> {
                 selectedDate = dateCopy.toISOString().split("T")[0];
                 selectedDateDisplay.textContent = "Selected Date: " + formatDate(dateCopy);
 
@@ -251,7 +295,7 @@
     }
 
     // --------------------- SAVE ANNOUNCEMENT ------------------------
-    saveBtn.addEventListener("click", ()=>{
+    saveBtn.addEventListener("click", ()=> {
         if(currentUser.username !== CREATOR_USERNAME){
             alert("Only the creator can post announcements.");
             return;
@@ -299,7 +343,8 @@
     }
 
     // --------------------- INIT ------------------------
-    generateThursdays();
+    generateAllDays();
+    generateTuesdays();
     loadAnnouncements();
 </script>
 </body>
