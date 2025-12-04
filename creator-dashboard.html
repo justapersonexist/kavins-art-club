@@ -5,53 +5,53 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Creator Dashboard | Art Club</title>
 <style>
-body { font-family: Arial, sans-serif; margin:0; padding:0; background:#f4f4f4; }
-header, section { padding:20px; }
-h1,h2,h3 { color:#333; }
+body { font-family: Arial, sans-serif; background:#f4f4f4; margin:0; }
+.navbar { background:#333; color:#fff; padding:10px 20px; display:flex; justify-content:space-between; align-items:center; }
+.navbar a { color:white; margin-left:20px; text-decoration:none; }
+.navbar button { background:#00796b; border:none; padding:8px 15px; border-radius:6px; cursor:pointer; color:white; }
 
-.navbar { background:#333; color:#fff; display:flex; justify-content:space-between; padding:10px 20px; align-items:center; }
-.navbar a { color:#fff; text-decoration:none; margin-left:20px; }
-.navbar button { padding:8px 15px; cursor:pointer; background:#00796b; color:white; border:none; border-radius:12px; transition: background 0.2s; }
-.navbar button:hover { background:#004d40; }
+.tab-bar { display:flex; background:white; padding:10px; gap:10px; justify-content:center; }
+.tab-button { padding:10px 15px; background:#ddd; border-radius:6px; cursor:pointer; }
+.tab-button.active { background:#00796b; color:white; }
 
-section { max-width: 900px; margin: 20px auto; background:#fff; padding:20px; border-radius:12px; box-shadow:0 2px 8px rgba(0,0,0,0.1); }
+.tab-content { display:none; max-width:900px; margin:20px auto; background:white; padding:20px; border-radius:10px; }
+.tab-content.active { display:block; }
 
-table { width: 100%; border-collapse: collapse; margin-top:20px; }
-th, td { padding:10px; border:1px solid #ccc; text-align:left; }
+table { width:100%; border-collapse:collapse; margin-top:15px; }
+th, td { border:1px solid #ccc; padding:10px; }
 th { background:#eee; }
 
-input, select { padding:6px 10px; margin:4px 0; }
-button.assign, button.update { background:#00796b; color:white; border:none; border-radius:6px; cursor:pointer; }
-button.assign:hover, button.update:hover { background:#004d40; }
+.search-box { width:100%; padding:10px; margin-bottom:15px; border:1px solid #ccc; border-radius:6px; }
+
+button.assign, button.update, button.delete-question { 
+    background:#00796b; 
+    color:white; 
+    padding:5px 10px; 
+    border:none; 
+    border-radius:6px; 
+    cursor:pointer; 
+}
+button.delete-question { background:#b71c1c; }
 </style>
 </head>
 <body>
 
-<!-- Navbar -->
 <header class="navbar">
-<h1 class="logo">Art Club</h1>
-<div>
-<!-- Navbar -->
-<header class="navbar">
-<h1 class="logo">Art Club</h1>
-<div>
-<a href="index.html">Home</a>
-<a href="about.html">About</a>
-<a href="events.html">Events</a>
-<a href="latest-announcements.html">Announcement</a>
-<a href="questions.html">Questions</a>
-<a href="hall_of_fame.html">Hall of Fame</a>
-<a href="canvas.html">Collaborative Canvas</a>
-<a href="report.html">Report</a>
-    <a href="creator-dashboard.html" id="creator-link" style="display:none;">Creator Dashboard</a>
+  <h1>Creator Dashboard</h1>
+  <div>
+    <a href="index.html">Home</a>
     <button id="logout-btn">Logout</button>
-</div>
+  </div>
 </header>
 
-<section>
-<h1>Creator Dashboard</h1>
-<p>Manage users, assign ranks, and update passwords.</p>
+<div class="tab-bar">
+    <div class="tab-button active" data-tab="manage">Manage Users</div>
+    <div class="tab-button" data-tab="allusers">All Users</div>
+    <div class="tab-button" data-tab="questions">Questions</div>
+</div>
 
+<section id="manage" class="tab-content active">
+<h2>Manage Users</h2>
 <table id="users-table">
 <thead>
 <tr>
@@ -61,35 +61,84 @@ button.assign:hover, button.update:hover { background:#004d40; }
 <th>Change Password</th>
 </tr>
 </thead>
-<tbody>
-<!-- Users will be populated here -->
-</tbody>
+<tbody></tbody>
+</table>
+</section>
+
+<section id="allusers" class="tab-content">
+<h2>All Users</h2>
+<input type="text" id="user-search" class="search-box" placeholder="Search users...">
+<table id="all-users-table">
+<thead>
+<tr>
+<th>Username</th>
+<th>Rank</th>
+</tr>
+</thead>
+<tbody></tbody>
+</table>
+</section>
+
+<section id="questions" class="tab-content">
+<h2>Submitted Questions</h2>
+<input type="text" id="question-search" class="search-box" placeholder="Search questions...">
+<table id="question-table">
+<thead>
+<tr>
+<th>Name</th>
+<th>Question</th>
+<th>Actions</th>
+</tr>
+</thead>
+<tbody></tbody>
 </table>
 </section>
 
 <script>
 // ------------------ PROTECT PAGE ------------------
 const currentUser = JSON.parse(localStorage.getItem("currentUser"));
-if(!currentUser || currentUser.rank !== "creator"){
-    alert("Access denied! Only creators can access this page.");
+if (!currentUser || currentUser.rank !== "creator") {
+    alert("Access denied!");
     window.location.href = "index.html";
 }
 
-// Logout button
+// ------------------ LOGOUT ------------------
 document.getElementById("logout-btn").addEventListener("click", () => {
     localStorage.removeItem("currentUser");
     window.location.href = "login.html";
 });
 
-// ------------------ POPULATE USERS ------------------
-let users = JSON.parse(localStorage.getItem("users") || "[]");
-const tbody = document.querySelector("#users-table tbody");
+// ------------------ TAB SYSTEM ------------------
+document.querySelectorAll(".tab-button").forEach(btn => {
+    btn.addEventListener("click", () => {
+        document.querySelectorAll(".tab-button").forEach(b => b.classList.remove("active"));
+        document.querySelectorAll(".tab-content").forEach(t => t.classList.remove("active"));
 
-function renderUsers() {
+        btn.classList.add("active");
+        document.getElementById(btn.dataset.tab).classList.add("active");
+    });
+});
+
+// ------------------ USERS API ------------------
+async function fetchUsers() {
+    const res = await fetch("/api/users");
+    return await res.json();
+}
+
+async function updateUser(user) {
+    await fetch("/api/users", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(user)
+    });
+}
+
+async function renderManageUsers() {
+    const users = await fetchUsers();
+    const tbody = document.querySelector("#users-table tbody");
     tbody.innerHTML = "";
     users.forEach((user, index) => {
         const tr = document.createElement("tr");
-
         tr.innerHTML = `
             <td>${user.username}</td>
             <td>${user.rank}</td>
@@ -108,30 +157,85 @@ function renderUsers() {
         `;
         tbody.appendChild(tr);
     });
+
+    tbody.addEventListener("click", async e => {
+        const idx = e.target.dataset.index;
+        if (e.target.classList.contains("assign")) {
+            const users = await fetchUsers();
+            users[idx].rank = document.getElementById(`rank-${idx}`).value;
+            await updateUser(users[idx]);
+            alert("Rank updated!");
+            renderManageUsers();
+        }
+        if (e.target.classList.contains("update")) {
+            const newPass = document.getElementById(`pass-${idx}`).value.trim();
+            if(!newPass) return alert("Password cannot be empty.");
+            const users = await fetchUsers();
+            users[idx].password = newPass;
+            await updateUser(users[idx]);
+            alert("Password updated!");
+            renderManageUsers();
+        }
+    });
 }
 
-renderUsers();
+renderManageUsers();
 
-// ------------------ ASSIGN RANK ------------------
-tbody.addEventListener("click", e => {
-    if(e.target.classList.contains("assign")){
-        const index = e.target.dataset.index;
-        const newRank = document.getElementById(`rank-${index}`).value;
-        users[index].rank = newRank;
-        localStorage.setItem("users", JSON.stringify(users));
-        alert(`Rank of ${users[index].username} updated to ${newRank}`);
-        renderUsers();
-    }
-    if(e.target.classList.contains("update")){
-        const index = e.target.dataset.index;
-        const newPass = document.getElementById(`pass-${index}`).value;
-        if(newPass.trim() === "") { alert("Password cannot be empty"); return; }
-        users[index].password = newPass;
-        localStorage.setItem("users", JSON.stringify(users));
-        alert(`Password of ${users[index].username} updated!`);
-        renderUsers();
-    }
+// ------------------ ALL USERS ------------------
+async function renderAllUsers(filter="") {
+    const users = await fetchUsers();
+    const tbody = document.querySelector("#all-users-table tbody");
+    tbody.innerHTML = "";
+    users
+        .filter(u => u.username.toLowerCase().includes(filter.toLowerCase()))
+        .forEach(u => {
+            const tr = document.createElement("tr");
+            tr.innerHTML = `<td>${u.username}</td><td>${u.rank}</td>`;
+            tbody.appendChild(tr);
+        });
+}
+
+document.getElementById("user-search").addEventListener("input", e => {
+    renderAllUsers(e.target.value);
 });
+
+renderAllUsers();
+
+// ------------------ QUESTIONS ------------------
+async function fetchQuestions() {
+    const res = await fetch("/api/questions");
+    return await res.json();
+}
+
+async function deleteQuestion(index) {
+    await fetch(`/api/questions/${index}`, { method: "DELETE" });
+}
+
+async function renderQuestions(filter="") {
+    const questions = await fetchQuestions();
+    const tbody = document.querySelector("#question-table tbody");
+    tbody.innerHTML = "";
+    questions
+        .filter(q => q.name.toLowerCase().includes(filter.toLowerCase()) || q.text.toLowerCase().includes(filter.toLowerCase()))
+        .forEach((q, index) => {
+            const tr = document.createElement("tr");
+            tr.innerHTML = `<td>${q.name}</td><td>${q.text}</td><td><button class="delete-question" data-index="${index}">Delete</button></td>`;
+            tbody.appendChild(tr);
+        });
+
+    tbody.querySelectorAll(".delete-question").forEach(btn => {
+        btn.addEventListener("click", async e => {
+            await deleteQuestion(e.target.dataset.index);
+            renderQuestions(filter);
+        });
+    });
+}
+
+document.getElementById("question-search").addEventListener("input", e => {
+    renderQuestions(e.target.value);
+});
+
+renderQuestions();
 </script>
 
 </body>
