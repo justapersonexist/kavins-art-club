@@ -4,211 +4,332 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Art Club | Home</title>
+
 <style>
-/* -------- GENERAL STYLES -------- */
+/* -------- GENERAL -------- */
 body { font-family: Arial, sans-serif; margin:0; padding:0; background:#f4f4f4; }
 header, section { padding:20px; }
-h1,h2,h3 { color:#333; }
+h1, h2 { color:#333; }
 
-/* Navbar */
-.navbar { background:#333; color:#fff; display:flex; justify-content:space-between; padding:10px 20px; align-items:center; flex-wrap:wrap; }
-.navbar a { color:#fff; text-decoration:none; margin-left:20px; }
-.navbar button { 
-    padding:8px 15px; cursor:pointer; 
-    background:#00796b; color:white; 
-    border:none; border-radius:12px; transition: background 0.2s; 
+/* NAVBAR */
+.navbar {
+    background:#333; color:#fff;
+    display:flex; justify-content:space-between;
+    padding:10px 20px; align-items:center; flex-wrap:wrap;
+}
+.navbar a { color:white; text-decoration:none; margin-left:20px; }
+.navbar button {
+    background:#00796b; color:white; border:none;
+    padding:8px 15px; border-radius:12px;
+    cursor:pointer; transition:0.25s;
 }
 .navbar button:hover { background:#004d40; }
 #user-info { margin-left:20px; font-weight:bold; }
 
-/* About Members */
-.about-members { max-width: 900px; margin: 20px auto; padding: 0 20px; }
-.about-member { display:flex; align-items:center; gap:20px; background:#fff; padding:20px; border-radius:12px; margin-bottom:20px; box-shadow:0 2px 8px rgba(0,0,0,0.1); }
-.about-member img { width:150px; height:150px; border-radius:50%; object-fit:cover; flex-shrink:0; }
-.about-member .info { flex:1; }
-.about-member h3 { margin-top:0; margin-bottom:5px; color:#333; }
-.about-member p { margin:5px 0; color:#555; line-height:1.4; }
+/* ABOUT MEMBERS */
+.about-members { max-width:900px; margin:20px auto; padding:0 20px; }
+.about-member {
+    display:flex; gap:20px; background:white;
+    padding:20px; border-radius:12px;
+    box-shadow:0 2px 8px rgba(0,0,0,0.1);
+    margin-bottom:20px;
+}
+.about-member img {
+    width:150px; height:150px; border-radius:50%; object-fit:cover;
+}
+.about-member p { color:#555; }
 
-/* Appointments Preview */
-#appointments-preview { margin-top:30px; max-width:800px; }
-#appointments-preview h2 { margin-bottom:10px; }
+/* APPOINTMENTS */
+#appointments-preview { max-width:800px; margin: 20px auto; }
 #appointments-preview ul { list-style:none; padding:0; }
-#appointments-preview li { background:#fff; padding:10px; border:1px solid #ccc; margin-bottom:5px; border-radius:8px; }
+#appointments-preview li {
+    background:#fff; padding:10px; border-radius:8px;
+    border:1px solid #ccc; margin-bottom:5px;
+}
 
-/* Art Tip of the Day */
-#art-tip { max-width:800px; margin:30px auto; background:#fff; padding:20px; border-radius:12px; box-shadow:0 2px 8px rgba(0,0,0,0.1); }
+/* ART TIP */
+#art-tip {
+    max-width:800px; margin:20px auto;
+    background:#fff; padding:20px; border-radius:12px;
+    box-shadow:0 2px 8px rgba(0,0,0,0.1);
+}
 
-/* Promotion Popup Modal */
+/* FLOATING CHAT BUBBLE */
+#chat-bubble {
+    position: fixed; bottom:20px; right:20px;
+    width:60px; height:60px; border-radius:50%;
+    background:#00796b; color:white; font-size:24px;
+    display:flex; justify-content:center; align-items:center;
+    cursor:pointer; z-index:1000;
+    box-shadow:0 4px 6px rgba(0,0,0,0.3);
+}
+
+/* CHAT WINDOW */
+#chat-window {
+    position:fixed; bottom:90px; right:20px;
+    width:300px; max-height:400px;
+    background:white; border-radius:12px;
+    display:none; flex-direction:column;
+    box-shadow:0 4px 8px rgba(0,0,0,0.3);
+    overflow:hidden; z-index:999;
+}
+#chat-header {
+    background:#00796b; color:white; padding:10px;
+    text-align:center; font-weight:bold;
+}
+#chat-messages {
+    flex:1; padding:10px; font-size:14px; overflow-y:auto;
+}
+.message.user { text-align:right; margin:5px 0; }
+.message.bot { text-align:left; margin:5px 0; color:#00796b; }
+
+#chat-input { display:flex; border-top:1px solid #ccc; }
+#chat-input input {
+    flex:1; padding:8px; border:none; outline:none;
+}
+#chat-input button {
+    background:#00796b; color:white;
+    border:none; padding:8px 12px; cursor:pointer;
+}
+#chat-input button:hover { background:#004d40; }
+
+/* PROMOTION MODAL */
 #promotion-modal {
-    display:none; 
-    position:fixed; 
-    top:0; left:0; width:100%; height:100%; 
-    background: rgba(0,0,0,0.5); 
-    justify-content:center; align-items:center;
-    z-index:1000;
+    display:none; position:fixed; top:0; left:0; width:100%; height:100%;
+    background:rgba(0,0,0,0.5); justify-content:center; align-items:center;
+    z-index:2000;
 }
 #promotion-modal .modal-content {
-    background:#fff; padding:30px; border-radius:12px; text-align:center;
-    max-width:400px; width:90%; box-shadow:0 5px 15px rgba(0,0,0,0.3);
-    animation:fadeIn 0.3s ease-out;
+    background:white; padding:25px; border-radius:15px;
+    text-align:center; max-width:400px; animation:fadeIn .25s;
 }
-#promotion-modal h2 { margin-top:0; color:#ff9800; }
-#promotion-modal button { margin-top:20px; background:#00796b; color:#fff; padding:10px 20px; border:none; border-radius:12px; cursor:pointer; transition:0.2s; }
-#promotion-modal button:hover { background:#004d40; }
-
-@keyframes fadeIn { from {opacity:0; transform: translateY(-20px);} to {opacity:1; transform: translateY(0);} }
-
-/* Responsive */
-@media (max-width:768px) {
-    .about-member { flex-direction:column; align-items:center; text-align:center; }
-    .about-member img { margin-bottom:15px; }
+#promotion-modal button {
+    margin-top:20px; background:#00796b; color:white;
+    border:none; padding:10px 20px; border-radius:10px; cursor:pointer;
+}
+@keyframes fadeIn {
+    from { opacity:0; transform:translateY(-10px); }
+    to { opacity:1; transform:translateY(0);}
 }
 </style>
 </head>
+
 <body>
 
-<!-- Navbar -->
+<!-- NAVBAR -->
 <header class="navbar">
-<h1 class="logo">🎨 Art Club</h1>
-<div>
-<a href="index.html">Home</a>
-<a href="about.html">About</a>
-<a href="events.html">Events</a>
-<a href="latest-announcements.html">Announcements</a>
-<a href="questions.html">Questions</a>
-<a href="hall_of_fame.html">Hall of Fame</a>
-<a href="canvas.html">Collaborative Canvas</a>
-<a href="ranks.html">Art Rank</a>
+    <h1>🎨 Art Club</h1>
+    <div>
+        <a href="index.html">Home</a>
+        <a href="about.html">About</a>
+        <a href="events.html">Events</a>
+        <a href="latest-announcements.html">Announcements</a>
+        <a href="questions.html">Questions</a>
+        <a href="hall_of_fame.html">Hall of Fame</a>
+        <a href="canvas.html">Collaborative Canvas</a>
+        <a href="ranks.html">Art Rank</a>
+        <a href="creator-dashboard.html" id="creator-link" style="display:none;">Creator Dashboard</a>
 
-<a href="creator-dashboard.html" id="creator-link" style="display:none;">Creator Dashboard</a>
-
-<button id="logout-btn">Logout</button>
-<span id="user-info"></span>
-</div>
+        <button id="logout-btn">Logout</button>
+        <span id="user-info"></span>
+    </div>
 </header>
 
-<!-- Page Content -->
+
+<!-- FLOATING CHAT BUTTON -->
+<div id="chat-bubble">💬</div>
+
+<!-- CHAT WINDOW -->
+<div id="chat-window">
+    <div id="chat-header">Helper Bot</div>
+    <div id="chat-messages"></div>
+
+    <div id="chat-input">
+        <input type="text" id="user-input" placeholder="Type your question...">
+        <button id="send-btn">Send</button>
+    </div>
+</div>
+
+
+<!-- MAIN CONTENT -->
 <section class="page-content">
-<h1>Welcome to the Art Club!</h1>
-<p>Explore our events, book appointments, and meet our talented members.</p>
+    <h1>Welcome to the Art Club!</h1>
+    <p>Explore our events, browse art, and meet our members!</p>
+</section>
 
-<!-- Art Tip of the Day -->
+<!-- ART TIP OF THE DAY -->
 <section id="art-tip">
-  <h2>🎨 Art Tip of the Day</h2>
-  <p id="tip-text">Loading tip...</p>
+    <h2>🎨 Art Tip of the Day</h2>
+    <p id="tip-text">Loading...</p>
 </section>
 
-<!-- About Members -->
+<!-- ABOUT MEMBERS -->
 <section class="about-members">
-<h2>About Our Members</h2>
-<div class="about-member">
-    <img src="images/kavin.jpg" alt="Kavin Manimaran">
-    <div class="info">
-      <h3>Kavin Manimorin</h3>
-      <p><strong>Role:</strong> Artist</p>
-      <p>Kavin is a passionate artist with 10 years of experience. He is the main artist, great at sketches, and loves helping others. Volleyball enthusiast!</p>
+    <h2>About Our Members</h2>
+
+    <div class="about-member">
+        <img src="images/kavin.jpg" alt="Kavin">
+        <div>
+            <h3>Kavin Manimarin</h3>
+            <p><strong>Role:</strong> Artist</p>
+            <p>Main artist, amazing at sketches, volleyball fan!</p>
+        </div>
     </div>
-</div>
-<div class="about-member">
-    <img src="images/savanth.jpg" alt="Savanth Maddineni">
-    <div class="info">
-      <h3>Savanth Maddineni</h3>
-      <p><strong>Role:</strong> Website Maker</p>
-      <p>Savanth created this website, helps Kavin with ideas, and is always kind-hearted. Volleyball lover too!</p>
+
+    <div class="about-member">
+        <img src="images/savanth.jpg" alt="Savanth">
+        <div>
+            <h3>Savanth Maddineni</h3>
+            <p><strong>Role:</strong> Website Creator</p>
+            <p>Built the website & supports Kavin with ideas.</p>
+        </div>
     </div>
-</div>
 </section>
 
-<!-- Upcoming Appointments Preview -->
-<div id="appointments-preview">
+<!-- APPOINTMENTS PREVIEW -->
+<section id="appointments-preview">
     <h2>Upcoming Appointments</h2>
     <ul id="appointments-list"></ul>
+</section>
+
+<!-- PROMOTION POPUP -->
+<div id="promotion-modal">
+    <div class="modal-content">
+        <h2>🎉 Congrats!</h2>
+        <p id="promotion-message"></p>
+        <button id="close-promo">Close</button>
+    </div>
 </div>
 
-<!-- Promotion Modal Template -->
-<div id="promotion-modal">
-  <div class="modal-content">
-    <h2>🎉 Congratulations!</h2>
-    <p id="promotion-message">Your art rank has been promoted!</p>
-    <button id="close-promo">Close</button>
-  </div>
-</div>
 
 <script>
-// ------------------ LOGIN CHECK ------------------
+/* LOGIN */
 const currentUser = JSON.parse(localStorage.getItem("currentUser"));
 if(!currentUser) window.location.href = "login.html";
 
-// Show creator dashboard link if user is creator
-if(currentUser.rank === "creator"){
+document.getElementById("user-info").textContent =
+    `${currentUser.username} (${currentUser.rank})`;
+
+if(currentUser.rank === "creator") {
     document.getElementById("creator-link").style.display = "inline-block";
 }
 
-document.getElementById("user-info").innerText = `${currentUser.username} (${currentUser.rank})`;
-
-document.getElementById("logout-btn").addEventListener("click", () => {
+document.getElementById("logout-btn").onclick = () => {
     localStorage.removeItem("currentUser");
     window.location.href = "login.html";
+};
+
+
+/* FLOATING BOT */
+const chatBubble = document.getElementById("chat-bubble");
+const chatWindow = document.getElementById("chat-window");
+
+chatBubble.onclick = () => {
+    chatWindow.style.display = chatWindow.style.display === "flex" ? "none" : "flex";
+    chatWindow.style.flexDirection = "column";
+};
+
+
+/* SMART BOT RESPONSES */
+const botResponses = {
+    greetings: {
+        "hello": "Hello! How can I help you?",
+        "hi": "Hi there!",
+        "hey": "Hey! What do you need help with?",
+        "good morning": "Good morning! How can I assist you today?",
+        "good afternoon": "Good afternoon! Need any help?",
+        "good evening": "Good evening! How can I help?",
+        "good night": "Good night! Don't hesitate to ask if you need anything.",
+        "what's up": "Not much, just here to help you!"
+    },
+    account: {
+        "how do i join": "You can join by signing up on the signup page!",
+        "how to login": "Go to the login page and enter your details.",
+        "forgot password": "Ask the admin to reset your password."
+    },
+    navigation: {
+        "where is events": "Find Events in the navbar at the top.",
+        "how to submit art": "You can submit art in the Hall of Fame section.",
+        "where is canvas": "The Collaborative Canvas is in the navbar."
+    },
+    club: {
+        "who created this": "The site was created by Savanth!",
+        "main artist": "The main artist is Kavin.",
+        "what is art club": "A place to create, share, and enjoy art!"
+    },
+    default: "Sorry, I don't understand that yet."
+};
+
+function getBotReply(msg) {
+    msg = msg.toLowerCase();
+
+    for (const category in botResponses) {
+        if (category === "default") continue;
+
+        for (const key in botResponses[category]) {
+            if (msg.includes(key)) return botResponses[category][key];
+        }
+    }
+
+    return botResponses.default;
+}
+
+document.getElementById("send-btn").onclick = sendMessage;
+document.getElementById("user-input").addEventListener("keypress", e => {
+    if(e.key === "Enter") sendMessage();
 });
 
-// ------------------ PROMOTION MODAL LOGIC ------------------
-function showPromotion(rank){
-    const modal = document.getElementById("promotion-modal");
-    document.getElementById("promotion-message").innerText = `Your art rank has been promoted to: ${rank}!`;
-    modal.style.display = "flex";
-}
-document.getElementById("close-promo").addEventListener("click", ()=>{ document.getElementById("promotion-modal").style.display="none"; });
+function sendMessage() {
+    const input = document.getElementById("user-input");
+    const text = input.value.trim();
+    if (!text) return;
 
-// Show promotion if rank changed
-const users = JSON.parse(localStorage.getItem("users") || "[]");
-const realUser = users.find(u => u.username === currentUser.username);
-const lastRank = localStorage.getItem(currentUser.username + "_lastRank");
-if(lastRank && lastRank !== realUser.rank){
-    showPromotion(realUser.rank);
-}
-localStorage.setItem(currentUser.username + "_lastRank", realUser.rank);
+    const messages = document.getElementById("chat-messages");
 
-// ------------------ ART TIP ------------------
-const dailyTips = [
-    "Experiment with a new medium this week.",
-    "Take a 10-minute sketch break daily.",
-    "Try mixing colors you’ve never combined before.",
-    "Use references from real life instead of only photos.",
-    "Practice shading with different pencil pressures.",
-    "Keep a small sketchbook for spontaneous ideas.",
-    "Study the works of a famous artist and recreate one piece.",
-    "Try creating art using only one color to explore tone and contrast."
+    messages.innerHTML += `<div class="message user">${text}</div>`;
+
+    const reply = getBotReply(text);
+    messages.innerHTML += `<div class="message bot">${reply}</div>`;
+
+    input.value = "";
+    messages.scrollTop = messages.scrollHeight;
+}
+
+
+/* ART TIP */
+const tips = [
+    "Try shading using only vertical lines!",
+    "Use softer pencils for smooth shadows.",
+    "Practice drawing hands—they improve everything.",
+    "Sketch something you see right now!",
+    "Try using only 1 color today."
 ];
-const tipTextElement = document.getElementById("tip-text");
-const today = new Date().toISOString().split('T')[0];
-let storedTip = JSON.parse(localStorage.getItem("dailyArtTip"));
-if(storedTip && storedTip.date === today){
-    tipTextElement.textContent = storedTip.tip;
-} else {
-    const randomTip = dailyTips[Math.floor(Math.random()*dailyTips.length)];
-    tipTextElement.textContent = randomTip;
-    localStorage.setItem("dailyArtTip", JSON.stringify({date:today, tip:randomTip}));
+
+const today = new Date().toISOString().split("T")[0];
+let tipData = JSON.parse(localStorage.getItem("dailyTip"));
+
+if (!tipData || tipData.date !== today) {
+    const tip = tips[Math.floor(Math.random() * tips.length)];
+    tipData = { date: today, tip };
+    localStorage.setItem("dailyTip", JSON.stringify(tipData));
 }
 
-// ------------------ APPOINTMENTS PREVIEW ------------------
-function formatDate(date){ return date.toLocaleDateString(undefined, { weekday:'long', month:'short', day:'numeric', year:'numeric' }); }
-const appointmentsList = document.getElementById("appointments-list");
-const saved = JSON.parse(localStorage.getItem("appointments") || "[]");
-const userAppointments = saved.filter(app => app.username === currentUser.username);
-if(userAppointments.length === 0){
-    const li = document.createElement("li");
-    li.textContent = "No upcoming appointments yet.";
-    appointmentsList.appendChild(li);
+document.getElementById("tip-text").textContent = tipData.tip;
+
+
+/* APPOINTMENTS */
+const appointments = JSON.parse(localStorage.getItem("appointments") || "[]");
+const myApps = appointments.filter(a => a.username === currentUser.username);
+const listEl = document.getElementById("appointments-list");
+
+if (myApps.length === 0) {
+    listEl.innerHTML = "<li>No upcoming appointments.</li>";
 } else {
-    userAppointments.forEach(app=>{
-        const date = new Date(app.date);
-        const li = document.createElement("li");
-        li.textContent = `${formatDate(date)}: ${app.name} — ${app.reason}`;
-        appointmentsList.appendChild(li);
+    myApps.forEach(app => {
+        listEl.innerHTML += `<li>${new Date(app.date).toLocaleDateString()} — ${app.reason}</li>`;
     });
 }
 </script>
 
 </body>
 </html>
-
