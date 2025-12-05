@@ -11,7 +11,7 @@ body { font-family: Arial, sans-serif; margin:0; padding:0; background:#f4f4f4; 
 header, section { padding:20px; }
 h1, h2 { color:#333; }
 
-/* 🎨 SIDE IMAGE YOU WANTED */
+/* 🎨 SIDE IMAGE */
 #side-image {
     position: fixed;
     right: 20px;
@@ -127,8 +127,8 @@ h1, h2 { color:#333; }
 
 <body>
 
-<!-- 🎨 YOUR SIDE FLOATING IMAGE -->
-<img id="side-image" src="images/IMG_1655.jpg" alt="">
+<!-- 🎨 SIDE IMAGE -->
+<img id="side-image" src="images/IMG_1655.jpg" alt="Side Art">
 
 <!-- NAVBAR -->
 <header class="navbar">
@@ -284,15 +284,12 @@ const botResponses = {
 
 function getBotReply(msg) {
     msg = msg.toLowerCase();
-
     for (const category in botResponses) {
         if (category === "default") continue;
-
         for (const key in botResponses[category]) {
             if (msg.includes(key)) return botResponses[category][key];
         }
     }
-
     return botResponses.default;
 }
 
@@ -305,14 +302,10 @@ function sendMessage() {
     const input = document.getElementById("user-input");
     const text = input.value.trim();
     if (!text) return;
-
     const messages = document.getElementById("chat-messages");
-
     messages.innerHTML += `<div class="message user">${text}</div>`;
-
     const reply = getBotReply(text);
     messages.innerHTML += `<div class="message bot">${reply}</div>`;
-
     input.value = "";
     messages.scrollTop = messages.scrollHeight;
 }
