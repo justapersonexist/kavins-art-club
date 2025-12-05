@@ -11,6 +11,17 @@ body { font-family: Arial, sans-serif; margin:0; padding:0; background:#f4f4f4; 
 header, section { padding:20px; }
 h1, h2 { color:#333; }
 
+/* 🎨 SIDE IMAGE YOU WANTED */
+#side-image {
+    position: fixed;
+    right: 20px;
+    bottom: 120px;
+    width: 180px;
+    border-radius: 15px;
+    opacity: 0.9;
+    z-index: 500;
+}
+
 /* NAVBAR */
 .navbar {
     background:#333; color:#fff;
@@ -116,6 +127,9 @@ h1, h2 { color:#333; }
 
 <body>
 
+<!-- 🎨 YOUR SIDE FLOATING IMAGE -->
+<img id="side-image" src="images/IMG_1655.jpg" alt="">
+
 <!-- NAVBAR -->
 <header class="navbar">
     <h1>🎨 Art Club</h1>
@@ -135,7 +149,6 @@ h1, h2 { color:#333; }
     </div>
 </header>
 
-
 <!-- FLOATING CHAT BUTTON -->
 <div id="chat-bubble">💬</div>
 
@@ -143,13 +156,11 @@ h1, h2 { color:#333; }
 <div id="chat-window">
     <div id="chat-header">Helper Bot</div>
     <div id="chat-messages"></div>
-
     <div id="chat-input">
         <input type="text" id="user-input" placeholder="Type your question...">
         <button id="send-btn">Send</button>
     </div>
 </div>
-
 
 <!-- MAIN CONTENT -->
 <section class="page-content">
@@ -201,7 +212,6 @@ h1, h2 { color:#333; }
     </div>
 </div>
 
-
 <script>
 /* LOGIN */
 const currentUser = JSON.parse(localStorage.getItem("currentUser"));
@@ -219,7 +229,6 @@ document.getElementById("logout-btn").onclick = () => {
     window.location.href = "login.html";
 };
 
-
 /* FLOATING BOT */
 const chatBubble = document.getElementById("chat-bubble");
 const chatWindow = document.getElementById("chat-window");
@@ -228,7 +237,6 @@ chatBubble.onclick = () => {
     chatWindow.style.display = chatWindow.style.display === "flex" ? "none" : "flex";
     chatWindow.style.flexDirection = "column";
 };
-
 
 /* SMART BOT RESPONSES */
 const botResponses = {
@@ -250,9 +258,6 @@ const botResponses = {
         "where are the ranks": "Check out the Art Rank section in the navbar.",
         "how to change password": "You need to contact the creator to change your password.",
         "how to change rank": "Only the creator can change ranks. Contact them for assistance."
-
-
-
     },
     navigation: {
         "where is events": "Find Events in the navbar at the top.",
@@ -263,8 +268,6 @@ const botResponses = {
         "how do i contribute": "You can contribute by joining events and submitting art!",
         "how to report": "You can contact a creator to report issues.",
         "where is hall of fame": "The Hall of Fame is accessible via the navbar link."
-        
-
     },
     club: {
         "who created this": "The site was created by Savanth!",
@@ -314,7 +317,6 @@ function sendMessage() {
     messages.scrollTop = messages.scrollHeight;
 }
 
-
 /* ART TIP */
 const tips = [
     "Try shading using only vertical lines!",
@@ -334,7 +336,6 @@ if (!tipData || tipData.date !== today) {
 }
 
 document.getElementById("tip-text").textContent = tipData.tip;
-
 
 /* APPOINTMENTS */
 const appointments = JSON.parse(localStorage.getItem("appointments") || "[]");
